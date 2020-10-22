@@ -14,7 +14,7 @@ data <- pkgs %>%
   filter(version != "modified") %>%
   mutate(
     date = as.Date(time_stamp, "%Y/%m/%d"),
-    version = str_replace(version, "(\\d{1,2}.\\d{1,2}.\\d{1,2})(\\w+)", "\\1-\\2")
+    version = str_replace(version, "^(\\d{1,2}.\\d{1,2}.\\d{1,2})(\\w+)$", "\\1-\\2")
   )
 
 # extracting the versions numbers with semver
