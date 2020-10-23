@@ -6,7 +6,7 @@ library(tidyverse)
 library(lubridate)
 
 # import the datasets
-pkgs <- read_csv("~/projects/dependency-analysis/data/raw/pkgs.csv", col_names = c("package_name", "version", "time_stamp"))
+pkgs <- read_csv("~/projects/dependency-analysis/data/raw/nodejs.csv", col_names = c("package_name", "version", "time_stamp"))
 
 # remove some left over headers and extract date
 data <- pkgs %>%
