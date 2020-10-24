@@ -9,7 +9,7 @@ library(semver)
 # import the datasets
 data <- read_csv("~/projects/dependency-analysis/data/processed/clean_dataset.csv")
 
-# plot the number of updates per date
+# plot all versions per date
 data %>%
   group_by(date) %>%
   tally() %>%
@@ -23,10 +23,10 @@ data %>%
     y = "Number of updates"
   )
 
+# plot the number of versions per package (2010-2020)
 data %>% 
   count(package_name, sort = TRUE) %>%
   mutate(package_name = fct_reorder(package_name, n)) %>%
-  #filter(n >= 10) %>%
   ggplot(aes(n, package_name)) +
   geom_col() +
   labs(
@@ -36,7 +36,7 @@ data %>%
   ) + 
   theme_minimal()
 
-# time to next major update
+# plot histogram of time (in days) to next major version since 2015
 data %>%
   filter(date >= "2015-01-01") %>%
   filter(minor == "0") %>%
@@ -51,6 +51,7 @@ data %>%
     ) +
     geom_histogram()
 
+# plot all major versions per date since 2015
 data %>%
   filter(date >= "2015-01-01") %>%
   filter(minor == "0") %>%
