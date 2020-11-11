@@ -140,3 +140,29 @@ data %>%
     y = "Number of versions (major, minor and patches)"
   )
 ```
+
+```{r}
+library(reshape)
+table <- cast(data, package_name ~ year)
+table
+```
+
+
+```{r}
+library(ggplot2)
+
+heatmap_data <- data %>% group_by(year, package_name) %>% tally()
+
+heatmap <- heatmap_data %>% 
+  ggplot(mapping = aes(x = year, y = package_name, fill = n)) +
+  geom_tile() +
+  xlab(label = "Year") +
+  scale_fill_gradient(name = "Number of versions",
+                      low = "#FFFFFF",
+                      high = "#012345") + 
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+
+heatmap
+```
+
+
