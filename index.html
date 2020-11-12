@@ -382,7 +382,7 @@ summary {
 <div id="context" class="section level2">
 <h2>Context</h2>
 <p>Open source projects rely on several libraries that get updated regularly. While not all updates have impact on the code that relies on it, some do.</p>
-<p>According to semantic versioning (see <a href="https://semver.org" class="uri">https://semver.org</a>), versions are numbered incrementally according to the type of change. A “MAJOR version” signifies incompatible API changes, a “MINOR version” signifies added functionality in a backwards compatible manner, and a “PATCH version” signifies backwards compatible bug fixes.</p>
+<p>According to <a href="https://semver.org">semantic versioning</a>, versions are numbered incrementally according to the type of change. A “MAJOR version” signifies incompatible API changes, a “MINOR version” signifies added functionality in a backwards compatible manner, and a “PATCH version” signifies backwards compatible bug fixes.</p>
 <p>This project explores the number and frequency of updates in a project currently under development. It aims to shed light on the update requirements once the project will be in production.</p>
 </div>
 <div id="methods" class="section level2">
@@ -402,37 +402,14 @@ summary {
 </div>
 <div id="cleaning-the-csv-file" class="section level3">
 <h3>Cleaning the CSV file</h3>
-<p>The data needed a little attention before any analysis would be possible. The first step was to read the csv file including names for each column as those were not specififed in the dataset.</p>
-<pre class="r"><code>library(here)</code></pre>
-<pre><code>## here() starts at /home/caroline/projects/dependency-analysis</code></pre>
-<pre class="r"><code>packages &lt;- read_csv(here(&quot;data&quot;, &quot;processed&quot;, &quot;nodejs.csv&quot;), col_names = c(&quot;package_name&quot;, &quot;version&quot;, &quot;time_stamp&quot;))</code></pre>
-<pre><code>## Parsed with column specification:
-## cols(
-##   package_name = col_character(),
-##   version = col_character(),
-##   time_stamp = col_datetime(format = &quot;&quot;)
-## )</code></pre>
-<p>Then, we removed rows that did not contain data, extracted the date from the time stamp, and parsed the version number to only include the first three numbers and the dots separating the numbers.</p>
-<pre class="r"><code>data &lt;- packages %&gt;%
-  filter(version != &quot;created&quot;) %&gt;%
-  filter(version != &quot;modified&quot;) %&gt;%
-  mutate(
-    date = as.Date(time_stamp, &quot;%Y/%m/%d&quot;),
-    year = as.factor(year(date)),
-    month = as.factor(month(date)),
-    weekday = as.factor(weekdays(date)),
-    version = str_replace(version, &quot;^(\\d{1,2}.\\d{1,2}.\\d{1,2})(\\w+)$&quot;, &quot;\\1-\\2&quot;)
-  )</code></pre>
-<p>Finally, using the semver library, we extracted the version numbers into separate columns for major, minor and patch versions.</p>
-<pre class="r"><code>data &lt;- add_column(
-  data,
-  pull(
-    data, version) %&gt;%
-    semver::parse_version() %&gt;%
-    as.data.frame() 
-    ) %&gt;%
-  arrange(major, minor, patch)</code></pre>
-<p>This left us with a dataset with nine columns being:</p>
+<p>The data needed a little attention before conducting analysis. The reader is referred to the <a href="https://github.com/caromimo/dependency-analysis/blob/master/index.Rmd">Rmarkdown file</a> for code and details.</p>
+<p>Briefly, the data was cleaned in three main steps:</p>
+<ol style="list-style-type: decimal">
+<li>read the CSV file with specification for the column names;</li>
+<li>removed rows that did not contain data, extracted the date from the time stamp, extracted the year as a factor, extracted the month as a factor, extracted the day of the week as a factor and parsed the version number to only include the first three numbers and the dots separating the numbers; and</li>
+<li>extracted the version numbers into separate columns for major, minor and patch versions using the semver library.</li>
+</ol>
+<p>Finally, the dataset contained 12 columns as follow:</p>
 <pre class="r"><code>colnames(data)</code></pre>
 <pre><code>##  [1] &quot;package_name&quot; &quot;version&quot;      &quot;time_stamp&quot;   &quot;date&quot;         &quot;year&quot;        
 ##  [6] &quot;month&quot;        &quot;weekday&quot;      &quot;major&quot;        &quot;minor&quot;        &quot;patch&quot;       
