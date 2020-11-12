@@ -28,13 +28,14 @@ This project explores the number and frequency of updates in a project currently
 
 ## Methods
 
+### Writing the data to a JSON file
 The [dependency manifest file](https://github.com/canada-ca/tracker/blob/003a3d6e0452fb9a248a7d51fd5556bc03dfbcc6/frontend/package.json) from the frontend of Government of Canada's Tracker project was used as a representative example of a modern software project.
 
 The manifest was retrieved using [curl](https://curl.se/) with the following command.
 ```
 curl -sL "https://raw.githubusercontent.com/canada-ca/tracker/003a3d6e0452fb9a248a7d51fd5556bc03dfbcc6/frontend/package.json" > data/raw/tracker-frontend-package.json
 ```
-
+### Converting the data to a CSV file
 Using the following [Bash](https://www.gnu.org/software/bash/) command, package names (both development and production) were extracted from the `tracker-frontend-package.json` and details for each was retrieved from the npm API.
 
 The command uses [jq](https://stedolan.github.io/jq) to select dependency name from the json and format the API response as CSV. Once again `curl` was used to retrieve data from the API.
@@ -44,7 +45,7 @@ for pkg in $(cat data/raw/tracker-frontend-package.json | jq '.dependencies * .d
 
 The CSV contained the name of the package, the version and a time stamp.
 
-## Cleaning data
+### Cleaning the CSV file
 
 The data needed a little attention before any analysis would be possible. The first step was to read the csv file including names for each column as those were not specififed in the dataset.
 

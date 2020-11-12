@@ -387,16 +387,21 @@ summary {
 </div>
 <div id="methods" class="section level2">
 <h2>Methods</h2>
+<div id="writing-the-data-to-a-json-file" class="section level3">
+<h3>Writing the data to a JSON file</h3>
 <p>The <a href="https://github.com/canada-ca/tracker/blob/003a3d6e0452fb9a248a7d51fd5556bc03dfbcc6/frontend/package.json">dependency manifest file</a> from the frontend of Government of Canada’s Tracker project was used as a representative example of a modern software project.</p>
 <p>The manifest was retrieved using <a href="https://curl.se/">curl</a> with the following command.</p>
 <pre><code>curl -sL &quot;https://raw.githubusercontent.com/canada-ca/tracker/003a3d6e0452fb9a248a7d51fd5556bc03dfbcc6/frontend/package.json&quot; &gt; data/raw/tracker-frontend-package.json</code></pre>
+</div>
+<div id="converting-the-data-to-a-csv-file" class="section level3">
+<h3>Converting the data to a CSV file</h3>
 <p>Using the following <a href="https://www.gnu.org/software/bash/">Bash</a> command, package names (both development and production) were extracted from the <code>tracker-frontend-package.json</code> and details for each was retrieved from the npm API.</p>
 <p>The command uses <a href="https://stedolan.github.io/jq">jq</a> to select dependency name from the json and format the API response as CSV. Once again <code>curl</code> was used to retrieve data from the API.</p>
 <pre><code>for pkg in $(cat data/raw/tracker-frontend-package.json | jq &#39;.dependencies * .devDependencies | keys[]&#39; | tr -d \&quot;); do $(curl -sL &quot;https://registry.npmjs.org/$pkg&quot; | jq -r --arg  name &quot;$pkg&quot; &#39;.time | to_entries[] | [$name, .key, .value] | @csv&#39; &gt;&gt; data/processed/nodejs.csv &amp;&amp; sleep 1 ); done</code></pre>
 <p>The CSV contained the name of the package, the version and a time stamp.</p>
 </div>
-<div id="cleaning-data" class="section level2">
-<h2>Cleaning data</h2>
+<div id="cleaning-the-csv-file" class="section level3">
+<h3>Cleaning the CSV file</h3>
 <p>The data needed a little attention before any analysis would be possible. The first step was to read the csv file including names for each column as those were not specififed in the dataset.</p>
 <pre class="r"><code>library(here)</code></pre>
 <pre><code>## here() starts at /home/caroline/projects/dependency-analysis</code></pre>
@@ -432,6 +437,7 @@ summary {
 <pre><code>##  [1] &quot;package_name&quot; &quot;version&quot;      &quot;time_stamp&quot;   &quot;date&quot;         &quot;year&quot;        
 ##  [6] &quot;month&quot;        &quot;weekday&quot;      &quot;major&quot;        &quot;minor&quot;        &quot;patch&quot;       
 ## [11] &quot;prerelease&quot;   &quot;build&quot;</code></pre>
+</div>
 </div>
 <div id="analysis" class="section level2">
 <h2>Analysis</h2>
