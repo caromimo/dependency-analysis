@@ -15,7 +15,7 @@ library(tidyverse)
 library(lubridate)
 library(semver)
 library(scales)
-library(skimr)
+library(reshape)
 ```
 
 ## Context
@@ -92,7 +92,7 @@ colnames(data)
 ## Analysis
 
 ###  Number of versions per date
-```{r}
+```{r, echo=FALSE}
 # plot all versions per date
 data %>%
   group_by(date) %>%
@@ -108,7 +108,7 @@ data %>%
 ```
 
 ### Number of versions per year
-```{r}
+```{r, echo=FALSE}
 # plot all versions per date
 data %>%
   group_by(year) %>%
@@ -123,7 +123,7 @@ data %>%
 ```
 
 ### Number of versions per year
-```{r}
+```{r, echo=FALSE}
 # plot all versions per date
 data %>%
   group_by(month) %>%
@@ -138,7 +138,7 @@ data %>%
 ```
 
 
-```{r}
+```{r, echo=FALSE}
 # plot all versions per date
 data %>%
   group_by(weekday) %>%
@@ -152,16 +152,13 @@ data %>%
   )
 ```
 
-```{r}
-library(reshape)
+```{r, include=FALSE}
 table <- cast(data, package_name ~ year)
 table
 ```
 
 
-```{r}
-library(ggplot2)
-
+```{r, echo=FALSE}
 heatmap_data <- data %>% group_by(year, package_name) %>% tally()
 
 heatmap <- heatmap_data %>% 
