@@ -32,10 +32,10 @@ The [dependency manifest file](https://github.com/canada-ca/tracker/blob/003a3d6
 
 Using the following command, package names (both development and production) were extracted from the `package.json` and details for each was retrieved from the npm API.
 
+The command uses [jq](https://stedolan.github.io/jq) to select dependency name from the json and format the API response as CSV.  [curl](https://curl.se/) was used to retrieve data from the API.
 ```
 for pkg in $(cat package.json | jq '.dependencies * .devDependencies | keys[]' | tr -d \"); do $(curl -sL "https://registry.npmjs.org/$pkg" | jq -r --arg  name "$pkg" '.time | to_entries[] | [$name, .key, .value] | @csv' >> nodejs.csv && sleep 1 ); done
 ```
-The command uses [jq](https://stedolan.github.io/jq) to select dependency name from the json and format the API response as CSV.  [curl](https://curl.se/) was used to retrieve data from the API.
 
 The resulting csv contained three columns; the name of the package, the version and a time stamp.
 
