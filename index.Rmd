@@ -1,5 +1,5 @@
 ---
-title: "Software dependancy analysis"
+:itle: "Software dependancy analysis"
 author: "C. Mimeault and M. Williamson"
 date: "11/11/2020"
 output: html_document
@@ -28,15 +28,16 @@ This project explores the number and frequency of updates in a project currently
 
 ## Methods
 
-mon amour - can you write the section on how you extracted the data?
+The [dependency manifest file](https://github.com/canada-ca/tracker/blob/003a3d6e0452fb9a248a7d51fd5556bc03dfbcc6/frontend/package.json) from the frontend of Government of Canada's Tracker project was used as a representative example of a modern software project.
 
-On October 22, 2020, the registry for NPMJS...
+Using the following command, package names (both development and production) were extracted from the `package.json` and details for each was retrieved from the npm API.
 
-`
-curl -sL "https://registry.npmjs.org/$pkg" | jq -r --arg  name "$pkg" '.time | to_entries[] | [$name, .key, .value] | @csv'
-`
+```
+for pkg in $(cat package.json | jq '.dependencies * .devDependencies | keys[]' | tr -d \"); do $(curl -sL "https://registry.npmjs.org/$pkg" | jq -r --arg  name "$pkg" '.time | to_entries[] | [$name, .key, .value] | @csv' >> nodejs.csv && sleep 1 ); done
+```
+The command uses [jq](https://stedolan.github.io/jq) to select dependency name from the json and format the API response as CSV.  [curl](https://curl.se/) was used to retrieve data from the API.
 
-The returned data was saved as a csv file. It contained three columns containing the name of the package, the version and a time stamp.
+The resulting csv contained three columns; the name of the package, the version and a time stamp.
 
 ## Cleaning data
 
@@ -166,5 +167,4 @@ heatmap <- heatmap_data %>%
 
 heatmap
 ```
-
 
