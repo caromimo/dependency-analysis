@@ -392,10 +392,10 @@ summary {
 <div id="methods" class="section level2">
 <h2>Methods</h2>
 <p>The <a href="https://github.com/canada-ca/tracker/blob/003a3d6e0452fb9a248a7d51fd5556bc03dfbcc6/frontend/package.json">dependency manifest file</a> from the frontend of Government of Canada’s Tracker project was used as a representative example of a modern software project.</p>
-<p>Using the following command, package names (both development and production) were extracted from the <code>package.json</code> and details for each was retrieved from the npm API.</p>
-<pre><code>for pkg in $(cat package.json | jq &#39;.dependencies * .devDependencies | keys[]&#39; | tr -d \&quot;); do $(curl -sL &quot;https://registry.npmjs.org/$pkg&quot; | jq -r --arg  name &quot;$pkg&quot; &#39;.time | to_entries[] | [$name, .key, .value] | @csv&#39; &gt;&gt; nodejs.csv &amp;&amp; sleep 1 ); done</code></pre>
+<p>Using the following <a href="https://www.gnu.org/software/bash/">Bash</a> command, package names (both development and production) were extracted from the <code>package.json</code> and details for each was retrieved from the npm API.</p>
 <p>The command uses <a href="https://stedolan.github.io/jq">jq</a> to select dependency name from the json and format the API response as CSV. <a href="https://curl.se/">curl</a> was used to retrieve data from the API.</p>
-<p>The resulting csv contained three columns; the name of the package, the version and a time stamp.</p>
+<pre><code>for pkg in $(cat package.json | jq &#39;.dependencies * .devDependencies | keys[]&#39; | tr -d \&quot;); do $(curl -sL &quot;https://registry.npmjs.org/$pkg&quot; | jq -r --arg  name &quot;$pkg&quot; &#39;.time | to_entries[] | [$name, .key, .value] | @csv&#39; &gt;&gt; nodejs.csv &amp;&amp; sleep 1 ); done</code></pre>
+<p>The CSV contained the name of the package, the version and a time stamp.The CSV contained the name of the package, the version and a time stamp.</p>
 </div>
 <div id="cleaning-data" class="section level2">
 <h2>Cleaning data</h2>
