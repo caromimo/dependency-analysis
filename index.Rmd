@@ -37,7 +37,7 @@ The command uses [jq](https://stedolan.github.io/jq) to select dependency name f
 for pkg in $(cat package.json | jq '.dependencies * .devDependencies | keys[]' | tr -d \"); do $(curl -sL "https://registry.npmjs.org/$pkg" | jq -r --arg  name "$pkg" '.time | to_entries[] | [$name, .key, .value] | @csv' >> nodejs.csv && sleep 1 ); done
 ```
 
-The resulting csv contained three columns; the name of the package, the version and a time stamp.
+The CSV contained the name of the package, the version and a time stamp.The CSV contained the name of the package, the version and a time stamp.
 
 ## Cleaning data
 
@@ -167,4 +167,3 @@ heatmap <- heatmap_data %>%
 
 heatmap
 ```
-
