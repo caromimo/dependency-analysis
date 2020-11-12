@@ -30,7 +30,7 @@ This project explores the number and frequency of updates in a project currently
 
 The [dependency manifest file](https://github.com/canada-ca/tracker/blob/003a3d6e0452fb9a248a7d51fd5556bc03dfbcc6/frontend/package.json) from the frontend of Government of Canada's Tracker project was used as a representative example of a modern software project.
 
-Using the following command, package names (both development and production) were extracted from the `package.json` and details for each was retrieved from the npm API.
+Using the following [Bash](https://www.gnu.org/software/bash/) command, package names (both development and production) were extracted from the `package.json` and details for each was retrieved from the npm API.
 
 The command uses [jq](https://stedolan.github.io/jq) to select dependency name from the json and format the API response as CSV.  [curl](https://curl.se/) was used to retrieve data from the API.
 ```
