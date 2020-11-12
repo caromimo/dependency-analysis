@@ -40,9 +40,11 @@ The returned data was saved as a csv file. It contained three columns containing
 
 ## Cleaning data
 
-The data needed a little attention before any analysis would be possible. The first step was to read the csv file including names for each column as those were not specififed in the dataset. 
-```{r data, message=FALSE}
-packages <- read_csv("~/projects/dependency-analysis/data/raw/nodejs.csv", col_names = c("package_name", "version", "time_stamp"))
+The data needed a little attention before any analysis would be possible. The first step was to read the csv file including names for each column as those were not specififed in the dataset.
+
+```{r}
+library(here)
+packages <- read_csv(here("data", "raw", "nodejs.csv"), col_names = c("package_name", "version", "time_stamp"))
 ```
 
 Then, we removed rows that did not contain data, extracted the date from the time stamp, and parsed the version number to only include the first three numbers and the dots separating the numbers.
