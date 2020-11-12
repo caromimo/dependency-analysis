@@ -28,15 +28,21 @@ This project explores the number and frequency of updates in a project currently
 
 ## Methods
 
-mon amour - can you write the section on how you extracted the data?
+The [dependency manifest file](https://github.com/canada-ca/tracker/blob/003a3d6e0452fb9a248a7d51fd5556bc03dfbcc6/frontend/package.json) from the frontend of Government of Canada's Tracker project was used as a representative example of a modern software project.
 
-On October 22, 2020, the registry for NPMJS...
+The manifest was retrieved using [curl](https://curl.se/) with the following command.
+```
+curl -sL "https://raw.githubusercontent.com/canada-ca/tracker/003a3d6e0452fb9a248a7d51fd5556bc03dfbcc6/frontend/package.json" > data/raw/tracker-frontend-package.json
+```
 
-`
-curl -sL "https://registry.npmjs.org/$pkg" | jq -r --arg  name "$pkg" '.time | to_entries[] | [$name, .key, .value] | @csv'
-`
+Using the following [Bash](https://www.gnu.org/software/bash/) command, package names (both development and production) were extracted from the `tracker-frontend-package.json` and details for each was retrieved from the npm API.
 
-The returned data was saved as a csv file. It contained three columns containing the name of the package, the version and a time stamp.
+The command uses [jq](https://stedolan.github.io/jq) to select dependency name from the json and format the API response as CSV. Once again `curl` was used to retrieve data from the API.
+```
+for pkg in $(cat data/raw/tracker-frontend-package.json | jq '.dependencies * .devDependencies | keys[]' | tr -d \"); do $(curl -sL "https://registry.npmjs.org/$pkg" | jq -r --arg  name "$pkg" '.time | to_entries[] | [$name, .key, .value] | @csv' >> data/processed/nodejs.csv && sleep 1 ); done
+```
+
+The CSV contained the name of the package, the version and a time stamp.
 
 ## Cleaning data
 
@@ -44,7 +50,7 @@ The data needed a little attention before any analysis would be possible. The fi
 
 ```{r}
 library(here)
-packages <- read_csv(here("data", "raw", "nodejs.csv"), col_names = c("package_name", "version", "time_stamp"))
+packages <- read_csv(here("data", "processed", "nodejs.csv"), col_names = c("package_name", "version", "time_stamp"))
 ```
 
 Then, we removed rows that did not contain data, extracted the date from the time stamp, and parsed the version number to only include the first three numbers and the dots separating the numbers.
@@ -166,5 +172,3 @@ heatmap <- heatmap_data %>%
 
 heatmap
 ```
-
-
