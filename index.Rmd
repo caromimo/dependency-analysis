@@ -91,7 +91,29 @@ colnames(data)
 
 ## Analysis
 
+### Descriptive statistics
+
+The dependency manifest file uses a total of 72 packages, which, all together, were updated through major, minor or patches in a total of 7,322 versions between December 29th 2010 to November 12th, 2020. 
+
+Figure 1 is a plot of the number of versions for each package in this time period, with the package with the most versions on top (webpack had 681 versions) and the package with the least versions at the bottom (webpack-config-utils had six versions). Figure 1 illustrates the variation in the number of versions among packages. Note that this might be due to the creation date of packages as they did not all exist in December 2010.
+
+```{r, fig.height=18, echo=FALSE}
+data %>% 
+  count(package_name, sort = TRUE) %>%
+  mutate(package_name = fct_reorder(package_name, n)) %>%
+  ggplot(aes(n, package_name)) +
+  geom_col() +
+  labs(
+    title = "Figure 1: Number of versions for each package\n between December 2010 and November 2020",
+    x = "Number of versions (majors, minors and patches)", 
+    y = "Package name"
+  ) + 
+  theme_minimal()
+```
+
+
 ###  Number of versions per date
+
 ```{r, echo=FALSE}
 # plot all versions per date
 data %>%
