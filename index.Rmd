@@ -1,6 +1,5 @@
 ---
 title: "Software dependancy analysis"
-author: "C. Mimeault and M. Williamson"
 date: "11/11/2020"
 output: html_document
 ---
