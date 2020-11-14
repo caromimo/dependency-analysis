@@ -111,6 +111,27 @@ data %>%
   theme_minimal()
 ```
 
+Figure 2 is a heatmap of the number of versions per year per package presented in alphabetical order. The more versions in a year for a given package, the darker the color. This figure illustrates that packages have been created in most years and that the number of version per package per year is highly variable. Some packages with most of their versions in the early years of their creation (e.g., babel-core), others with most versions in recent years (e.g., react) and others without clear trends (e.g., d3). Note that at the time of writing this, the year 2020 was not complete.  
+
+```{r, fig.height=18, echo=FALSE}
+heatmap_data <- data %>% group_by(year, package_name) %>% tally()
+
+heatmap <- heatmap_data %>% 
+  ggplot(mapping = aes(x = year, y = package_name, fill = n)) +
+  geom_tile() +
+  labs(
+    title = "Figure 2: Number of versions per year per package",
+    x = "Year", 
+    y = "Package name"
+  ) +
+  scale_fill_gradient(name = "# of versions",
+                      low = "#FFFFFF",
+                      high = "#012345") + 
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+
+heatmap
+```
+
 
 ###  Number of versions per date
 
@@ -179,18 +200,3 @@ table <- cast(data, package_name ~ year)
 table
 ```
 
-
-```{r, echo=FALSE}
-heatmap_data <- data %>% group_by(year, package_name) %>% tally()
-
-heatmap <- heatmap_data %>% 
-  ggplot(mapping = aes(x = year, y = package_name, fill = n)) +
-  geom_tile() +
-  xlab(label = "Year") +
-  scale_fill_gradient(name = "Number of versions",
-                      low = "#FFFFFF",
-                      high = "#012345") + 
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
-
-heatmap
-```
