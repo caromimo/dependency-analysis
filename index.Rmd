@@ -166,33 +166,54 @@ data %>%
   )
 ```
 
+Figure 5 illustrates the number of versions per package used in the [dependency manifest file](https://github.com/canada-ca/tracker/blob/003a3d6e0452fb9a248a7d51fd5556bc03dfbcc6/frontend/package.json) that existed per year between December 2010 and November 2020.  Note that the years 2010 and 2020 are not complete.
 
 ```{r, echo=FALSE}
 # plot all versions per date
+
 data %>%
-  group_by(month) %>%
-  tally() %>%
-  ggplot(aes(month, n)) +
+  group_by(year) %>%
+  summarise(
+    number_of_versions = n(),
+    number_of_packages = n_distinct(package_name),
+    number_versions_over_package = number_of_versions / number_of_packages
+            ) %>%
+  ggplot(aes(year, number_versions_over_package)) +
   geom_col() +
   theme_classic() +
   labs(
-    x = "Month", 
-    y = "Number of versions (major, minor and patches)"
+    title = "Figure 5: Number of versions per package per year between 2010 and 2020",
+    x = "Year", 
+    y = "Number of versions per package"
   )
 ```
 
 ```{r, echo=FALSE}
+# # plot all versions per date
+# data %>%
+#   group_by(month) %>%
+#   tally() %>%
+#   ggplot(aes(month, n)) +
+#   geom_col() +
+#   theme_classic() +
+#   labs(
+#     x = "Month", 
+#     y = "Number of versions (major, minor and patches)"
+#   )
+```
+
+```{r, echo=FALSE}
 # plot all versions per date
-data %>%
-  group_by(weekday) %>%
-  tally() %>%
-  ggplot(aes(weekday, n)) +
-  geom_col() +
-  theme_classic() +
-  labs(
-    x = "Weekday", 
-    y = "Number of versions (major, minor and patches)"
-  )
+# data %>%
+#   group_by(weekday) %>%
+#   tally() %>%
+#   ggplot(aes(weekday, n)) +
+#   geom_col() +
+#   theme_classic() +
+#   labs(
+#     x = "Weekday", 
+#     y = "Number of versions (major, minor and patches)"
+#   )
 ```
 
 ```{r, include=FALSE}
