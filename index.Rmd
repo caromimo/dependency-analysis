@@ -132,7 +132,7 @@ heatmap <- heatmap_data %>%
 heatmap
 ```
 
-Figure 3 illustrates the total number of versions per year between December 2010 and November 2020 for the packages used in the [dependency manifest file](https://github.com/canada-ca/tracker/blob/003a3d6e0452fb9a248a7d51fd5556bc03dfbcc6/frontend/package.json). Note that the years 2010 and 2020 are not complete. Between 2011 and 2019, there was an increasing number of versions per year, partially due to new packages being created. 
+Figure 3 illustrates the total number of versions per year between December 2010 and November 2020 for the packages used in the [dependency manifest file](https://github.com/canada-ca/tracker/blob/003a3d6e0452fb9a248a7d51fd5556bc03dfbcc6/frontend/package.json). Note that the years 2010 and 2020 are not complete. Between 2011 and 2019, there was an increasing number of versions per year, partially due to new packages being created.
 
 ```{r, echo=FALSE}
 # plot all versions per date
@@ -148,6 +148,24 @@ data %>%
     y = "Number of versions (major, minor and patches)"
   )
 ```
+
+Figure 4 illustrates the number of packages used in the [dependency manifest file](https://github.com/canada-ca/tracker/blob/003a3d6e0452fb9a248a7d51fd5556bc03dfbcc6/frontend/package.json) that existed per year between December 2010 and November 2020.  Note that the years 2010 and 2020 are not complete. Between 2011 and 2019, there was an increasing number of packages for which versions were being deployer per year.
+
+```{r, echo=FALSE}
+# plot all versions per date
+data %>%
+  group_by(year) %>%
+  summarise(number_of_packages = n_distinct(package_name)) %>%
+  ggplot(aes(year, number_of_packages)) +
+  geom_col() +
+  theme_classic() +
+  labs(
+    title = "Figure 4: Number of packages per year between 2010 and 2020",
+    x = "Year", 
+    y = "Number of packages"
+  )
+```
+
 
 ```{r, echo=FALSE}
 # plot all versions per date
