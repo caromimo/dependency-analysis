@@ -93,7 +93,7 @@ colnames(data)
 
 ### Descriptive statistics
 
-The dependency manifest file uses a total of 72 packages, which, all together, were updated through major, minor or patches in a total of 7,322 versions between December 29th 2010 to November 12th, 2020. 
+The [dependency manifest file](https://github.com/canada-ca/tracker/blob/003a3d6e0452fb9a248a7d51fd5556bc03dfbcc6/frontend/package.json) uses a total of 72 packages, which, all together, were updated through major, minor or patches in a total of 7,322 versions between December 29th 2010 to November 12th, 2020. 
 
 Figure 1 is a plot of the number of versions for each package in this time period, with the package with the most versions on top (webpack had 681 versions) and the package with the least versions at the bottom (webpack-config-utils had six versions). Figure 1 illustrates the variation in the number of versions among packages. Note that this might be due to the creation date of packages as they did not all exist in December 2010.
 
@@ -132,7 +132,8 @@ heatmap <- heatmap_data %>%
 heatmap
 ```
 
-### Number of versions per year
+Figure 3 illustrates the total number of versions per year between December 2010 and November 2020 for the packages used in the [dependency manifest file](https://github.com/canada-ca/tracker/blob/003a3d6e0452fb9a248a7d51fd5556bc03dfbcc6/frontend/package.json). Note that the years 2010 and 2020 are not complete. Between 2011 and 2019, there was an increasing number of versions per year, partially due to new packages being created. 
+
 ```{r, echo=FALSE}
 # plot all versions per date
 data %>%
@@ -142,12 +143,12 @@ data %>%
   geom_col() +
   theme_classic() +
   labs(
+    title = "Figure 3: Number of versions per year between 2010 and 2020",
     x = "Year", 
     y = "Number of versions (major, minor and patches)"
   )
 ```
 
-### Number of versions per year
 ```{r, echo=FALSE}
 # plot all versions per date
 data %>%
@@ -161,7 +162,6 @@ data %>%
     y = "Number of versions (major, minor and patches)"
   )
 ```
-
 
 ```{r, echo=FALSE}
 # plot all versions per date
