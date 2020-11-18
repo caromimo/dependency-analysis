@@ -176,9 +176,9 @@ data %>%
   summarise(
     number_of_versions = n(),
     number_of_packages = n_distinct(package_name),
-    number_versions_over_package = number_of_versions / number_of_packages
+    number_versions_per_package = number_of_versions / number_of_packages
             ) %>%
-  ggplot(aes(year, number_versions_over_package)) +
+  ggplot(aes(year, number_versions_per_package)) +
   geom_col() +
   theme_classic() +
   labs(
