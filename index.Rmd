@@ -127,7 +127,9 @@ heatmap <- heatmap_data %>%
   scale_fill_gradient(name = "# of versions",
                       low = "#e8f1fa",
                       high = "#002e5c") +
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) + 
+  theme_minimal() + 
+  theme(axis.text.x = element_text(angle = 90))
 
 heatmap
 ```
