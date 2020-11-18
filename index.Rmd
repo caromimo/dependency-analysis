@@ -83,7 +83,7 @@ data <- add_column(
   arrange(major, minor, patch)
 ```
 
-Finally, the dataset contained 12 columns as follow: package_name, version, time_stamp, date, year, month, weekday, major, minor, patch, prerelease, and build.
+The dataset contained 12 columns as follow: package_name, version, time_stamp, date, year, month, weekday, major, minor, patch, prerelease, and build.
 
 ```{r, include=FALSE}
 colnames(data)
@@ -134,7 +134,7 @@ heatmap <- heatmap_data %>%
 heatmap
 ```
 
-Figure 3 illustrates the total number of versions per year between December 2010 and November 2020 for the packages used in the [dependency manifest file](https://github.com/canada-ca/tracker/blob/003a3d6e0452fb9a248a7d51fd5556bc03dfbcc6/frontend/package.json). Note that the years 2010 and 2020 are not complete. Between 2011 and 2019, there was an increasing number of versions per year, partially due to new packages being created.
+Figure 3 illustrates the total number of versions per year between December 2010 and November 2020 for the packages used in the [dependency manifest file](https://github.com/canada-ca/tracker/blob/003a3d6e0452fb9a248a7d51fd5556bc03dfbcc6/frontend/package.json). Note that at the time of writing this, the year 2020 was not complete. Between 2011 and 2019, there was an increasing number of versions per year, partially due to new packages being created.
 
 ```{r, echo=FALSE}
 # plot all versions per date
@@ -151,7 +151,7 @@ data %>%
   )
 ```
 
-Figure 4 illustrates the number of packages used in the [dependency manifest file](https://github.com/canada-ca/tracker/blob/003a3d6e0452fb9a248a7d51fd5556bc03dfbcc6/frontend/package.json) that existed per year between December 2010 and November 2020.  Note that the years 2010 and 2020 are not complete. Between 2011 and 2019, there was an increasing number of packages for which versions were being deployer per year.
+Figure 4 illustrates the number of packages used in the [dependency manifest file](https://github.com/canada-ca/tracker/blob/003a3d6e0452fb9a248a7d51fd5556bc03dfbcc6/frontend/package.json) that existed per year between December 2010 and November 2020. Note that at the time of writing this, the year 2020 was not complete. Between 2011 and 2019, there was an increasing number of packages for which versions were being deployer per year.
 
 ```{r, echo=FALSE}
 # plot all versions per date
@@ -168,11 +168,9 @@ data %>%
   )
 ```
 
-Figure 5 illustrates the number of versions per package used in the [dependency manifest file](https://github.com/canada-ca/tracker/blob/003a3d6e0452fb9a248a7d51fd5556bc03dfbcc6/frontend/package.json) that existed per year between December 2010 and November 2020.  Note that the years 2010 and 2020 are not complete.
+Figure 5 illustrates the number of versions per package used in the [dependency manifest file](https://github.com/canada-ca/tracker/blob/003a3d6e0452fb9a248a7d51fd5556bc03dfbcc6/frontend/package.json) that existed per year between December 2010 and November 2020. Note that at the time of writing this, the year 2020 was not complete.
 
 ```{r, echo=FALSE}
-# plot all versions per date
-
 data %>%
   group_by(year) %>%
   summarise(
@@ -191,35 +189,13 @@ data %>%
 ```
 
 ```{r, echo=FALSE}
-# # plot all versions per date
-# data %>%
-#   group_by(month) %>%
-#   tally() %>%
-#   ggplot(aes(month, n)) +
-#   geom_col() +
-#   theme_classic() +
-#   labs(
-#     x = "Month", 
-#     y = "Number of versions (major, minor and patches)"
-#   )
-```
-
-```{r, echo=FALSE}
-# plot all versions per date
-# data %>%
-#   group_by(weekday) %>%
-#   tally() %>%
-#   ggplot(aes(weekday, n)) +
-#   geom_col() +
-#   theme_classic() +
-#   labs(
-#     x = "Weekday", 
-#     y = "Number of versions (major, minor and patches)"
-#   )
-```
-
-```{r, include=FALSE}
-table <- cast(data, package_name ~ year)
-table
+# major_versions <- data %>%
+#   filter(minor == "0") %>%
+#   filter(patch == "0") %>% 
+#   filter(is.na(prerelease)) %>% 
+#   arrange(time_stamp) %>%
+#   mutate(
+#     days_until_next_major_version = as.numeric(lead(date) - date)
+#   ) 
 ```
 
