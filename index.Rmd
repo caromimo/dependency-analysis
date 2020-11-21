@@ -94,7 +94,12 @@ The cleaned dataset contains the following 12 columns: package_name, version, ti
 
 ### Descriptive statistics
 
-The [dependency manifest file](https://github.com/canada-ca/tracker/blob/003a3d6e0452fb9a248a7d51fd5556bc03dfbcc6/frontend/package.json) uses a total of 72 packages, which, all together, were updated through major, minor or patches in a total of 7,322 versions since December 29th 2010. In other words, the packages used in this file were all created after December 2010.
+The [dependency manifest file](https://github.com/canada-ca/tracker/blob/003a3d6e0452fb9a248a7d51fd5556bc03dfbcc6/frontend/package.json) uses a total of 72 packages, which, all together, were updated through major, minor, patches and pre-releases in a total of 7,322 versions since December 29th 2010. Of those, 2,660 (36%) were pre-releases which were removed as they are not expected to significantly impact development and maintenance of the [dependency manifest file](https://github.com/canada-ca/tracker/blob/003a3d6e0452fb9a248a7d51fd5556bc03dfbcc6/frontend/package.json). 
+
+```{r}
+data <- data %>% 
+  filter(prerelease == "") 
+```
 
 Figure 1 is a plot of the number of versions for each package in this time period, with the package with the most versions at the top (webpack had 681 versions) and the package with the least versions at the bottom (webpack-config-utils had six versions). Figure 1 illustrates the variation in the number of versions among packages. Note that this might be due to the creation date of packages as they did not all exist in December 2010.
 
@@ -106,7 +111,7 @@ data %>%
   geom_col() +
   labs(
     title = "Figure 1: Number of versions for each package\n between December 2010 and November 2020",
-    x = "Number of versions (majors, minors and patches)", 
+    x = "Number of versions (majors, minors, patches and pre-releases)", 
     y = "Package name"
   ) + 
   theme_minimal()
@@ -138,7 +143,6 @@ heatmap
 Figure 3 illustrates the total number of versions per year between December 2010 and November 2020 for the packages used in the [dependency manifest file](https://github.com/canada-ca/tracker/blob/003a3d6e0452fb9a248a7d51fd5556bc03dfbcc6/frontend/package.json). Note that at the time of writing this, the year 2020 was not complete. Between 2011 and 2019, there was an increasing number of versions per year, partially due to new packages being created.
 
 ```{r, echo=FALSE}
-# plot all versions per date
 data %>%
   group_by(year) %>%
   tally() %>%
@@ -146,7 +150,7 @@ data %>%
   geom_col() +
   theme_classic() +
   labs(
-    title = "Figure 3: Number of versions per year between 2010 and 2020",
+    title = "Figure 3: Number of versions per year",
     x = "Year", 
     y = "Number of versions (major, minor and patches)"
   )
@@ -155,7 +159,6 @@ data %>%
 Figure 4 illustrates the number of packages used in the [dependency manifest file](https://github.com/canada-ca/tracker/blob/003a3d6e0452fb9a248a7d51fd5556bc03dfbcc6/frontend/package.json) that existed per year between December 2010 and November 2020. Note that at the time of writing this, the year 2020 was not complete. Between 2011 and 2019, there was an increasing number of packages for which versions were being deployer per year.
 
 ```{r, echo=FALSE}
-# plot all versions per date
 data %>%
   group_by(year) %>%
   summarise(number_of_packages = n_distinct(package_name)) %>%
@@ -163,7 +166,7 @@ data %>%
   geom_col() +
   theme_classic() +
   labs(
-    title = "Figure 4: Number of packages per year between 2010 and 2020",
+    title = "Figure 4: Number of packages per year",
     x = "Year", 
     y = "Number of packages"
   )
@@ -172,8 +175,6 @@ data %>%
 Figure 5 illustrates the number of versions per package used in the [dependency manifest file](https://github.com/canada-ca/tracker/blob/003a3d6e0452fb9a248a7d51fd5556bc03dfbcc6/frontend/package.json) that existed per year between December 2010 and November 2020. Note that at the time of writing this, the year 2020 was not complete.
 
 ```{r, echo=FALSE}
-# plot all versions per date
-
 data %>%
   group_by(year) %>%
   summarise(
@@ -185,7 +186,7 @@ data %>%
   geom_col() +
   theme_classic() +
   labs(
-    title = "Figure 5: Number of versions per package per year between 2010 and 2020",
+    title = "Figure 5: Number of versions per package per year",
     x = "Year", 
     y = "Number of versions per package"
   )
@@ -193,17 +194,22 @@ data %>%
 
 
 ```{r, echo=FALSE}
-
-# filter major versions in 2017
-interval_between_major_versions <- data %>%
-  filter(date >= "2017-01-01") %>%
-  filter(date < "2018-01-01") %>%
-  filter(minor == "0") %>%
+interval_between_major_versions <- data %>% 
+  filter(minor == "0") %>% 
   filter(patch == "0") %>% 
-  filter(is.na(prerelease)) %>% 
-  mutate(major_version = paste0(package_name, " ", major, ".", minor, ".", patch)) %>% 
-  arrange(time_stamp) %>%
-  mutate(
-    days_until_next_major_version = as.numeric(lead(date) - date)
-  ) 
+  filter(prerelease == "") 
+```
+
+
+
+```{r, echo=FALSE}
+# interval_between_major_versions <- data %>%
+#   filter(minor == "0") %>%
+#   filter(patch == "0") %>% 
+#   filter(is.na(prerelease)) %>% 
+#   mutate(major_version = paste0(package_name, " ", major, ".", minor, ".", patch)) %>% 
+#   arrange(time_stamp) %>%
+#   mutate(
+#     days_until_next_major_version = as.numeric(lead(date) - date)
+#   ) 
 ```
