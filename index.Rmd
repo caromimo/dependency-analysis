@@ -192,24 +192,64 @@ data %>%
   )
 ```
 
-
 ```{r, echo=FALSE}
-interval_between_major_versions <- data %>% 
+major_versions_only <- data %>% 
   filter(minor == "0") %>% 
-  filter(patch == "0") %>% 
-  filter(prerelease == "") 
+  filter(patch == "0")
 ```
 
-
-
 ```{r, echo=FALSE}
-# interval_between_major_versions <- data %>%
-#   filter(minor == "0") %>%
-#   filter(patch == "0") %>% 
-#   filter(is.na(prerelease)) %>% 
-#   mutate(major_version = paste0(package_name, " ", major, ".", minor, ".", patch)) %>% 
-#   arrange(time_stamp) %>%
-#   mutate(
-#     days_until_next_major_version = as.numeric(lead(date) - date)
-#   ) 
+interval_between_major_versions_only <- major_versions_only %>%
+   mutate(major_version = paste0(package_name, " ", major, ".", minor, ".", patch)) %>% 
+   arrange(time_stamp) %>%
+   mutate(
+     days_until_next_major_version = as.numeric(lead(date) - date)
+   ) %>%
+  drop_na(days_until_next_major_version) 
+```
+
+```{r}
+interval_between_major_versions_only %>% 
+  ggplot(
+    aes(x=days_until_next_major_version)
+    ) +
+    geom_histogram() + 
+  theme_minimal() +
+  labs(
+    title = "Distribution of time between major versions (all years)",
+    x = "Time (days) between major versions",
+    y = "Count"
+  )
+```
+
+```{r}
+interval_between_major_versions_only %>% 
+  ggplot(
+    aes(x=days_until_next_major_version)
+    ) +
+    geom_histogram() + 
+    theme_minimal() +
+  labs(
+    title = "Distribution of time between major versions (by year)",
+    x = "Time (days) between major versions",
+    y = "Count"
+  ) +
+  facet_wrap(~ year)
+```
+
+```{r}
+interval_between_major_versions_only %>% 
+  filter(date >= "2016-01-01") %>%
+  filter(date < "2020-01-01") %>%
+  ggplot(
+    aes(x=days_until_next_major_version)
+    ) +
+    geom_histogram() + 
+    theme_minimal() +
+  labs(
+    title = "Distribution of time between major versions (by year)",
+    x = "Time (days) between major versions",
+    y = "Count"
+  ) +
+  facet_wrap(~ year)
 ```
