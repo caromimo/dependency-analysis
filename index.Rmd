@@ -96,7 +96,7 @@ The cleaned dataset contains the following 12 columns: package_name, version, ti
 
 The [dependency manifest file](https://github.com/canada-ca/tracker/blob/003a3d6e0452fb9a248a7d51fd5556bc03dfbcc6/frontend/package.json) uses a total of 72 packages, which, all together, were updated through major, minor, patches and pre-releases in a total of 7,322 versions since December 29th 2010. Of those, 2,660 (36%) were pre-releases which were removed as they are not expected to significantly impact development and maintenance of the [dependency manifest file](https://github.com/canada-ca/tracker/blob/003a3d6e0452fb9a248a7d51fd5556bc03dfbcc6/frontend/package.json). 
 
-```{r}
+```{r, include=FALSE}
 data <- data %>% 
   filter(prerelease == "") 
 ```
@@ -192,13 +192,15 @@ data %>%
   )
 ```
 
-```{r, echo=FALSE}
+INCLUDE NARRATIVE TO DESCRIBE THAT NOW ONLY FOCUSING ON MAJOR VERSIONS
+in theory a minor and a patch will not require code changes
+```{r, include=FALSE}
 major_versions_only <- data %>% 
   filter(minor == "0") %>% 
   filter(patch == "0")
 ```
 
-```{r, echo=FALSE}
+```{r, include=FALSE}
 interval_between_major_versions_only <- major_versions_only %>%
    mutate(major_version = paste0(package_name, " ", major, ".", minor, ".", patch)) %>% 
    arrange(time_stamp) %>%
@@ -208,7 +210,8 @@ interval_between_major_versions_only <- major_versions_only %>%
   drop_na(days_until_next_major_version) 
 ```
 
-```{r}
+
+```{r, echo=FALSE}
 interval_between_major_versions_only %>% 
   ggplot(
     aes(x=days_until_next_major_version)
@@ -216,13 +219,13 @@ interval_between_major_versions_only %>%
     geom_histogram() + 
   theme_minimal() +
   labs(
-    title = "Distribution of time between major versions (all years)",
+    title = "Figure 6: Distribution of time between major versions (all years)",
     x = "Time (days) between major versions",
     y = "Count"
   )
 ```
 
-```{r}
+```{r, echo=FALSE}
 interval_between_major_versions_only %>% 
   ggplot(
     aes(x=days_until_next_major_version)
@@ -230,14 +233,27 @@ interval_between_major_versions_only %>%
     geom_histogram() + 
     theme_minimal() +
   labs(
-    title = "Distribution of time between major versions (by year)",
+    title = "Figure 7: Distribution of time between major versions (by year)",
     x = "Time (days) between major versions",
     y = "Count"
   ) +
   facet_wrap(~ year)
 ```
 
-```{r}
+```{r, echo=FALSE}
+interval_between_major_versions_only %>% 
+  group_by(year) %>%
+  summarise(
+    number_of_major_versions = n(), 
+    median_time = median(days_until_next_major_version),
+    average_time = mean(days_until_next_major_version),
+    standard_deviation = sd(days_until_next_major_version)
+  )
+```
+
+Figure 7 demonstrates the differences between The distributions (Figure 7, the number of versions per year and the average time between major versions of days between major versions changeaverage time between major versions 
+
+```{r, message=FALSE}
 interval_between_major_versions_only %>% 
   filter(date >= "2014-01-01") %>%
   filter(date < "2020-01-01") %>%
@@ -254,7 +270,7 @@ interval_between_major_versions_only %>%
   facet_wrap(~ year)
 ```
 
-```{r}
+```{r, message=FALSE}
 interval_between_major_versions_only %>% 
   filter(date >= "2018-01-01") %>%
   filter(date < "2020-01-01") %>%
@@ -271,3 +287,18 @@ interval_between_major_versions_only %>%
   facet_wrap(~ year)
 ```
 
+```{r, message=FALSE}
+interval_between_major_versions_only %>% 
+  filter(date >= "2018-01-01") %>%
+  filter(date < "2020-01-01") %>%
+  ggplot(
+    aes(x=days_until_next_major_version)
+    ) +
+    geom_histogram() + 
+    theme_minimal() +
+  labs(
+    title = "Distribution of time between major versions (2018 and 2019)",
+    x = "Time (days) between major versions",
+    y = "Count"
+  ) 
+```
