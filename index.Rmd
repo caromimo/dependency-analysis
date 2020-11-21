@@ -11,8 +11,9 @@ rm(list = ls())
 
 ```{r libraries, include=FALSE}
 library(tidyverse)
+library(here) # to read csv files with the function here
 library(lubridate)
-library(semver)
+library(semver) # to extract the version numbers into separate columns
 library(scales)
 library(reshape)
 ```
@@ -48,21 +49,25 @@ The CSV contained the name of the package, the version and a time stamp.
 
 The data needed a little attention before conducting analysis. The reader is referred to the [Rmarkdown file](https://github.com/caromimo/dependency-analysis/blob/master/index.Rmd) for code and details. 
 
-Briefly, the data was cleaned in three main steps:
+Briefly, the data was cleaned in the four main steps:
 
-1. read the CSV file with specification for the column names;
-2. removed rows that did not contain data, extracted the date from the time stamp, extracted the year as a factor, extracted the month as a factor, extracted the day of the week as a factor and parsed the version number to only include the first three numbers and the dots separating the numbers; and
-3. extracted the version numbers into separate columns for major, minor and patch versions using the semver library.
+1. read the CSV file and specify column names;
+2. removed rows that did not contain data - for each package, the "time" returned a series of keys (version numbers but also a "created" and a "modified") and values (time stamp) - it was assumed that the row with "created" and the earliest version of a package were on the same day and that the "modified" and the latesst version of a package were on the same day; 
+3. extracted the date from the time stamp, extracted the year as a factor, extracted the month as a factor, extracted the day of the week as a factor and parsed the version number to only include the first three numbers and the dots separating the numbers; and
+4. extracted the version numbers into separate columns for major, minor and patch versions using the semver library.
 
 ```{r, include=FALSE}
-library(here)
 packages <- read_csv(here("data", "processed", "nodejs.csv"), col_names = c("package_name", "version", "time_stamp"))
 ```
 
 ```{r, include=FALSE}
 data <- packages %>%
   filter(version != "created") %>%
-  filter(version != "modified") %>%
+  filter(version != "modified")
+```
+
+```{r, include=FALSE}
+data <- data %>%
   mutate(
     date = as.Date(time_stamp, "%Y/%m/%d"),
     year = as.factor(year(date)),
@@ -83,11 +88,7 @@ data <- add_column(
   arrange(major, minor, patch)
 ```
 
-The dataset contained 12 columns as follow: package_name, version, time_stamp, date, year, month, weekday, major, minor, patch, prerelease, and build.
-
-```{r, include=FALSE}
-colnames(data)
-```
+The cleaned dataset contains the following 12 columns: package_name, version, time_stamp, date, year, month, weekday, major, minor, patch, prerelease, and build.
 
 ## Analysis
 
@@ -171,6 +172,8 @@ data %>%
 Figure 5 illustrates the number of versions per package used in the [dependency manifest file](https://github.com/canada-ca/tracker/blob/003a3d6e0452fb9a248a7d51fd5556bc03dfbcc6/frontend/package.json) that existed per year between December 2010 and November 2020. Note that at the time of writing this, the year 2020 was not complete.
 
 ```{r, echo=FALSE}
+# plot all versions per date
+
 data %>%
   group_by(year) %>%
   summarise(
@@ -188,14 +191,19 @@ data %>%
   )
 ```
 
-```{r, echo=FALSE}
-# major_versions <- data %>%
-#   filter(minor == "0") %>%
-#   filter(patch == "0") %>% 
-#   filter(is.na(prerelease)) %>% 
-#   arrange(time_stamp) %>%
-#   mutate(
-#     days_until_next_major_version = as.numeric(lead(date) - date)
-#   ) 
-```
 
+```{r, echo=FALSE}
+
+# filter major versions in 2017
+interval_between_major_versions <- data %>%
+  filter(date >= "2017-01-01") %>%
+  filter(date < "2018-01-01") %>%
+  filter(minor == "0") %>%
+  filter(patch == "0") %>% 
+  filter(is.na(prerelease)) %>% 
+  mutate(major_version = paste0(package_name, " ", major, ".", minor, ".", patch)) %>% 
+  arrange(time_stamp) %>%
+  mutate(
+    days_until_next_major_version = as.numeric(lead(date) - date)
+  ) 
+```
