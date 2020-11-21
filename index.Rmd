@@ -14,6 +14,7 @@ library(tidyverse)
 library(here) # to read csv files with the function here
 library(lubridate)
 library(semver) # to extract the version numbers into separate columns
+library(formattable) # to format tables
 library(scales)
 library(reshape)
 ```
@@ -92,7 +93,7 @@ The cleaned dataset contains the following 12 columns: package_name, version, ti
 
 ## Analysis
 
-### Descriptive statistics
+### Descriptive statistics (all versions)
 
 The [dependency manifest file](https://github.com/canada-ca/tracker/blob/003a3d6e0452fb9a248a7d51fd5556bc03dfbcc6/frontend/package.json) uses a total of 72 packages, which, all together, were updated through major, minor, patches and pre-releases in a total of 7,322 versions since December 29th 2010. Of those, 2,660 (36%) were pre-releases which were removed as they are not expected to significantly impact development and maintenance of the [dependency manifest file](https://github.com/canada-ca/tracker/blob/003a3d6e0452fb9a248a7d51fd5556bc03dfbcc6/frontend/package.json). 
 
@@ -110,7 +111,7 @@ data %>%
   ggplot(aes(n, package_name)) +
   geom_col() +
   labs(
-    title = "Figure 1: Number of versions for each package\n between December 2010 and November 2020",
+    title = "Figure 1: Number of versions for each package",
     x = "Number of versions (majors, minors, patches and pre-releases)", 
     y = "Package name"
   ) + 
@@ -192,8 +193,10 @@ data %>%
   )
 ```
 
-INCLUDE NARRATIVE TO DESCRIBE THAT NOW ONLY FOCUSING ON MAJOR VERSIONS
-in theory a minor and a patch will not require code changes
+### Time between major versions
+
+In this section, we are interested in the time between major versions. In theory, minor versions and a patches will not require code changes but major versions will. We therefore only selected the major versions from the datasets. There was a total of 262 major versions, representing less than 4% of all versions.
+
 ```{r, include=FALSE}
 major_versions_only <- data %>% 
   filter(minor == "0") %>% 
@@ -240,14 +243,21 @@ interval_between_major_versions_only %>%
   facet_wrap(~ year)
 ```
 
-```{r, echo=FALSE}
-interval_between_major_versions_only %>% 
+```{r, include=FALSE}
+table <- interval_between_major_versions_only %>% 
   group_by(year) %>%
   summarise(
     number_of_major_versions = n(), 
     median_time = median(days_until_next_major_version),
     average_time = mean(days_until_next_major_version),
     standard_deviation = sd(days_until_next_major_version)
+  ) 
+```
+
+```{r, echo=FALSE}
+formattable(
+  table,
+  align =c("l","c","c","c","c")
   )
 ```
 
