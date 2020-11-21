@@ -102,7 +102,7 @@ data <- data %>%
   filter(prerelease == "") 
 ```
 
-Figure 1 is a plot of the number of versions for each package in this time period, with the package with the most versions at the top (webpack had 681 versions) and the package with the least versions at the bottom (webpack-config-utils had six versions). Figure 1 illustrates the variation in the number of versions among packages. Note that this might be due to the creation date of packages as they did not all exist in December 2010.
+Figure 1 is a plot of the number of versions for each package in this time period, with the package with the most versions at the top (webpack had 307 versions) and the package with the least versions at the bottom (webpack-config-utils had six versions). Figure 1 illustrates the variation in the number of versions among packages. Note that this might be due to the creation date of packages as they did not all exist in December 2010.
 
 ```{r, fig.height=18, echo=FALSE}
 data %>% 
