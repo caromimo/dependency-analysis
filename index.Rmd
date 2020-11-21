@@ -239,7 +239,7 @@ interval_between_major_versions_only %>%
 
 ```{r}
 interval_between_major_versions_only %>% 
-  filter(date >= "2016-01-01") %>%
+  filter(date >= "2014-01-01") %>%
   filter(date < "2020-01-01") %>%
   ggplot(
     aes(x=days_until_next_major_version)
@@ -253,3 +253,21 @@ interval_between_major_versions_only %>%
   ) +
   facet_wrap(~ year)
 ```
+
+```{r}
+interval_between_major_versions_only %>% 
+  filter(date >= "2018-01-01") %>%
+  filter(date < "2020-01-01") %>%
+  ggplot(
+    aes(x=days_until_next_major_version)
+    ) +
+    geom_histogram() + 
+    theme_minimal() +
+  labs(
+    title = "Distribution of time between major versions (by year)",
+    x = "Time (days) between major versions",
+    y = "Count"
+  ) +
+  facet_wrap(~ year)
+```
+
