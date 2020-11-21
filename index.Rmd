@@ -263,24 +263,7 @@ formattable(
 
 Figure 7 demonstrates the differences between The distributions (Figure 7, the number of versions per year and the average time between major versions of days between major versions changeaverage time between major versions 
 
-```{r, message=FALSE}
-interval_between_major_versions_only %>% 
-  filter(date >= "2014-01-01") %>%
-  filter(date < "2020-01-01") %>%
-  ggplot(
-    aes(x=days_until_next_major_version)
-    ) +
-    geom_histogram() + 
-    theme_minimal() +
-  labs(
-    title = "Distribution of time between major versions (by year)",
-    x = "Time (days) between major versions",
-    y = "Count"
-  ) +
-  facet_wrap(~ year)
-```
-
-```{r, message=FALSE}
+```{r, echo=FALSE}
 interval_between_major_versions_only %>% 
   filter(date >= "2018-01-01") %>%
   filter(date < "2020-01-01") %>%
@@ -290,14 +273,14 @@ interval_between_major_versions_only %>%
     geom_histogram() + 
     theme_minimal() +
   labs(
-    title = "Distribution of time between major versions (by year)",
+    title = "Figure 8: Distribution of time between major versions (2018 and 2019)",
     x = "Time (days) between major versions",
     y = "Count"
   ) +
   facet_wrap(~ year)
 ```
 
-```{r, message=FALSE}
+```{r, echo=FALSE}
 interval_between_major_versions_only %>% 
   filter(date >= "2018-01-01") %>%
   filter(date < "2020-01-01") %>%
@@ -307,8 +290,20 @@ interval_between_major_versions_only %>%
     geom_histogram() + 
     theme_minimal() +
   labs(
-    title = "Distribution of time between major versions (2018 and 2019)",
+    title = "Figure 9: Distribution of time between major versions (2018 and 2019)",
     x = "Time (days) between major versions",
     y = "Count"
+  ) 
+```
+
+```{r}
+interval_between_major_versions_only %>% 
+  filter(date >= "2018-01-01") %>%
+  filter(date < "2020-01-01") %>%
+  summarise(
+    number_of_major_versions = n(), 
+    median_time = median(days_until_next_major_version),
+    average_time = mean(days_until_next_major_version),
+    standard_deviation = sd(days_until_next_major_version)
   ) 
 ```
