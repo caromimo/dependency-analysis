@@ -324,7 +324,7 @@ line_pos <- data.frame(
     "date"=unique(major_versions_in_2018$date),
     "position"=rep(positions, length.out=length(unique(major_versions_in_2018$date))),
     "direction"=rep(directions, length.out=length(unique(major_versions_in_2018$date)))
-)
+    )
 
 df <- merge(x=major_versions_in_2018, y=line_pos, by="date", all = TRUE)
 df <- df[with(df, order(date, major_version)), ]
