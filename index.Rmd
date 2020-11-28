@@ -118,7 +118,7 @@ data %>%
   theme_minimal()
 ```
 
-Figure 2 is a heatmap of the number of versions per year per package with packages organised in alphabetical order on the y-axis. The more versions in a year for a given package, the darker the color. This figure illustrates that packages have been created in every year between 2011 and 2019 and that the number of versions per package per year is highly variable. Some packages had most of their versions in the early years of their creation (e.g., babel-core), others had most versions in recent years (e.g., react) and others had no clear trends (e.g., d3). Note that at the time of writing this, the year 2020 was not complete.  
+Figure 2 is a heatmap of the number of versions per year per package with packages organised in alphabetical order on the y-axis. The more versions in a year for a given package, the darker the color (see legend). This figure illustrates that packages were created in every year between 2011 and 2019 and that the number of versions per package per year is highly variable. Some packages had most of their versions in the early years of their creation (e.g., babel-core), others had most versions in recent years (e.g., react) and others had no clear trends (e.g., d3). Note that at the time of writing this, the year 2020 was not complete.  
 
 ```{r, fig.height=18, echo=FALSE}
 heatmap_data <- data %>% group_by(year, package_name) %>% tally()
@@ -219,7 +219,7 @@ interval_between_major_versions_only %>%
   ggplot(
     aes(x=days_until_next_major_version)
     ) +
-    geom_histogram() + 
+  geom_histogram() + 
   theme_minimal() +
   labs(
     title = "Figure 6: Distribution of time between major versions (all years)",
