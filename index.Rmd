@@ -176,7 +176,7 @@ plot_grid(plot_all_versions_per_package_per_year, plot_major_versions_per_packag
 
 ### Time between major versions
 
-In this section, we are interested in the time between major versions. In theory, minor versions and a patches will not require code changes but major versions will. We therefore only selected the major versions from the datasets. There was a total of 262 major versions, representing less than 4% of all versions.
+In theory, minor versions and patches do not require code changes but major versions do. Since December 2010, there were 262 major versions of the packages used in the [dependency manifest file](https://github.com/canada-ca/tracker/blob/003a3d6e0452fb9a248a7d51fd5556bc03dfbcc6/frontend/package.json), representing less than 4% of all versions. 
 
 ```{r, include=FALSE}
 major_versions_only <- data %>% 
@@ -224,9 +224,10 @@ formattable(
   )
 ```
 
+**Figure 5** illustrates the distribution of the time between major versions broken per year. In this figure and in the table below, We can see that the long periods between major versions occured in 2011 (585 days) and 2012 (210 days). We can also see that the median and the average time between the major versions were highly variable before 2015. **Figure 2** also illustrates that updates to all packages starting with @ started in 2018. This represents a change in the packages were names using [scopes](https://blog.npmjs.org/post/116936804365/solving-npms-hard-problem-naming-packages). 
+
 **Figure 7** demonstrates the differences between 
 The distributions (Figure 7, the number of versions per year and the average time between major versions of days between major versions changeaverage time between major versions 
-
 
 ```{r, echo=FALSE}
 interval_between_major_versions_only %>% 
@@ -287,25 +288,23 @@ timeline_2018 <- interval_between_major_versions_only %>%
   filter(date >= "2018-01-01") %>%
   filter(date < "2019-01-01") %>%
   ggplot(aes(x=date)) +
-    geom_bar(colour = "black", fill = "white") + 
+    geom_bar() + 
     labs(
-      title = "Figure X: Major versions per date in 2018",
       x = "Date in 2018",
-      y = "Count"
+      y = "Number of major versions"
     )
 
 timeline_2019 <- interval_between_major_versions_only %>% 
   filter(date >= "2019-01-01") %>%
   filter(date < "2020-01-01") %>%
   ggplot(aes(x=date)) +
-    geom_bar(colour = "black", fill = "white") + 
+    geom_bar() + 
     labs(
-      title = "Figure X: Major versions per date in 2019",
       x = "Date in 2019",
-      y = "Count"
+      y = "Number of major versions"
     )
 
-plot_grid(timeline_2018, timeline_2019, labels = c('A', 'B'))
+plot_grid(timeline_2018, timeline_2019, ncol = 1)
 ```
 
 ## Methods
@@ -341,4 +340,4 @@ The cleaned dataset contains the following 12 columns: package_name, version, ti
 
 ## Acknowledgments
 
-I would like to thank M. Williasom for the inspiration and the raw data and L. Puts for the help with plots.
+Thank you M. Williasom for the inspiration and the raw data and L. Puts for the help with plots.
