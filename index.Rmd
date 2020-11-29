@@ -16,11 +16,10 @@ library(here) # to read csv files with the function here
 library(lubridate)
 library(semver) # to extract the version numbers into separate columns
 library(formattable) # to format tables
-library(scales)
-library(reshape)
 library(cowplot) # to plot figures side by side
 library(dplyr, warn.conflicts = FALSE)
 options(dplyr.summarise.inform = FALSE)
+library(hms) # to extract the time
 ```
 
 ## Context
@@ -42,12 +41,10 @@ data <- packages %>%
 ```
 
 ```{r, include=FALSE}
-library(hms)
 data <- data %>%
   mutate(
     date = as.Date(time_stamp, "%Y/%m/%d"),
-    ttime = as.hms(time_stamp, "%H:%M:%S"),
-    time = format(time_stamp, "%H:%M:%S"),
+    time = as.hms(time_stamp, "%H:%M:%S"),
     year = as.factor(year(date)),
     month = as.factor(month(date)),
     version = str_replace(version, "^(\\d{1,2}.\\d{1,2}.\\d{1,2})(\\w+)$", "\\1-\\2")
@@ -229,6 +226,7 @@ formattable(
 
 **Figure 7** demonstrates the differences between 
 The distributions (Figure 7, the number of versions per year and the average time between major versions of days between major versions changeaverage time between major versions 
+
 
 ```{r, echo=FALSE}
 interval_between_major_versions_only %>% 
