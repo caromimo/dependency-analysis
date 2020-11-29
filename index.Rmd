@@ -148,8 +148,7 @@ data %>%
     number_versions_per_package = number_of_versions / number_of_packages
             ) %>%
   ggplot(aes(year, number_versions_per_package)) +
-  geom_col() +
-  theme_classic() +
+  geom_col(colour = "black", fill = "white") +
   labs(
     title = "Figure 4: Number of versions per package per year",
     x = "Year", 
@@ -177,16 +176,10 @@ interval_between_major_versions_only <- major_versions_only %>%
   drop_na(days_until_next_major_version) 
 ```
 
-
 ```{r, echo=FALSE}
 interval_between_major_versions_only %>% 
-  ggplot(
-    aes(x=days_until_next_major_version)
-    ) +
-  geom_histogram(
-    binwidth = 20
-  ) + 
-  theme_minimal() +
+  ggplot(aes(x=days_until_next_major_version)) +
+  geom_histogram(boundary = 0, binwidth = 20, colour = "black", fill = "white") + 
   labs(
     title = "Figure 5: Distribution of time between major versions (all years)",
     x = "Time (days) between major versions",
@@ -196,13 +189,8 @@ interval_between_major_versions_only %>%
 
 ```{r, echo=FALSE}
 interval_between_major_versions_only %>% 
-  ggplot(
-    aes(x=days_until_next_major_version)
-    ) +
-    geom_histogram(
-      binwidth = 20
-    ) + 
-    theme_minimal() +
+  ggplot(aes(x=days_until_next_major_version)) +
+  geom_histogram(boundary = 0, binwidth = 20, colour = "black", fill = "white") + 
   labs(
     title = "Figure 6: Distribution of time between major versions (by year)",
     x = "Time (days) between major versions",
