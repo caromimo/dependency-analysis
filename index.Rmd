@@ -501,3 +501,28 @@ timeline_plot <- df %>% ggplot(
 timeline_plot
 ```
 
+```{r, echo=FALSE}
+interval_between_major_versions_only %>% 
+  filter(date >= "2019-01-01") %>%
+  filter(date < "2020-01-01") %>%
+  ggplot(aes(x=date)) +
+    geom_bar(colour = "black", fill = "white") + 
+    labs(
+      title = "Figure X: Major versions per date in 2019",
+      x = "Date in 2019",
+      y = "Count"
+    )
+```
+
+```{r, echo=FALSE}
+interval_between_major_versions_only %>% 
+  filter(date >= "2018-01-01") %>%
+  filter(date < "2019-01-01") %>%
+  ggplot(aes(x=date)) +
+    geom_bar(colour = "black", fill = "white") + 
+    labs(
+      title = "Figure X: Major versions per date in 2018",
+      x = "Date in 2018",
+      y = "Count"
+    )
+```
