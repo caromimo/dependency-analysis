@@ -95,17 +95,16 @@ heatmap_data <- data %>% group_by(year, package_name) %>% tally()
 
 heatmap_data %>% 
   ggplot(mapping = aes(x = year, y = reorder(package_name, desc(package_name)), fill = n)) +
-  geom_tile() +
+  geom_tile(colour = "black") +
   labs(
     title = "Figure 2: Number of versions per year per package",
     x = "Year", 
     y = "Package name"
   ) +
   scale_fill_gradient(name = "# of versions",
-                      low = "#e8f1fa",
-                      high = "#002e5c") +
+                      low = "white",
+                      high = "black") +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) + 
-  theme_minimal() + 
   theme(axis.text.x = element_text(angle = 90))
 ```
 
@@ -261,8 +260,6 @@ interval_between_major_versions_only %>%
   ) 
 ```
 
-### TIMELINE
-
 ```{r, echo=FALSE}
 major_versions_in_2018 <- interval_between_major_versions_only %>%
   filter(date >= "2018-01-01") %>%
@@ -270,187 +267,9 @@ major_versions_in_2018 <- interval_between_major_versions_only %>%
 ```
 
 ```{r, echo=FALSE}
-positions <- c(0.25, -0.25, 1.25, -1.25, 0.5, -0.5, 1.5, -1.5, 0.75, -0.75, 1.75, -1.75, 2, -2)
-directions <- c(1, -1)
-
-line_pos <- data.frame(
-    "date"=unique(major_versions_in_2018$date),
-    "position"=rep(positions, length.out=length(unique(major_versions_in_2018$date))),
-    "direction"=rep(directions, length.out=length(unique(major_versions_in_2018$date)))
-    )
-
-df <- merge(x=major_versions_in_2018, y=line_pos, by="date", all = TRUE)
-df <- df[with(df, order(date, major_version)), ]
-
-month_buffer <- 1
-
-month_date_range <- seq(min(df$date) - months(month_buffer), max(df$date) + months(month_buffer), by='month')
-month_format <- format(month_date_range, '%b')
-month_df <- data.frame(month_date_range, month_format)
-
-year_date_range <- seq(min(df$date) - months(month_buffer), max(df$date) + months(month_buffer), by='year')
-year_date_range <- as.Date(
-    intersect(
-        ceiling_date(year_date_range, unit="year"),
-        floor_date(year_date_range, unit="year")
-    ),  origin = "1970-01-01"
-)
-year_format <- format(year_date_range, '%Y')
-year_df <- data.frame(year_date_range, year_format)
-
-text_offset <- 0.05
-
-df$month_count <- ave(df$date==df$date, df$date, FUN=cumsum)
-df$text_position <- (df$month_count * text_offset * df$direction) + df$position
-head(df)
-
-#### PLOT ####
-timeline_plot <- df %>% ggplot(
-  aes(x=date, y=0, label=major_version)
-  ) +
-  theme_classic() +
-  geom_hline(
-    yintercept=0,
-    color = "black",
-    size=0.3
-    ) +
-  geom_segment(
-    data=df[df$month_count == 1,], 
-    aes(y=position, yend=0, xend=date), 
-    color='black',
-    size=0.2
-    ) +
-  geom_point(
-    aes(y=0), 
-    size=2
-    ) +
-  theme(
-    axis.line.y=element_blank(),
-    axis.text.y=element_blank(),
-    axis.title.x=element_blank(),
-    axis.title.y=element_blank(),
-    axis.ticks.y=element_blank(),
-    axis.text.x =element_blank(),
-    axis.ticks.x =element_blank(),
-    axis.line.x =element_blank(),
-    legend.position = "bottom"
-    ) +
-  geom_text(
-    data=month_df, 
-    aes(x=month_date_range,y=-0.1,label=month_format),
-    size=2.5,
-    vjust=0.5,
-    color='black',
-    angle=90
-    ) +
-  geom_text(
-    data=year_df, 
-    aes(x=year_date_range,y=2,label=year_format, fontface="bold"),
-    size=5.5,
-    color='black'
-    ) +
-  geom_text(
-    aes(y=text_position,label=major_version),
-    size=2.5
-    )
-
-timeline_plot
-```
-
-
-
-```{r, echo=FALSE}
 major_versions_in_2019 <- interval_between_major_versions_only %>%
   filter(date >= "2019-01-01") %>%
   filter(date < "2020-01-01")
-```
-
-```{r, echo=FALSE}
-positions <- c(0.25, -0.25, 1.25, -1.25, 0.5, -0.5, 1.5, -1.5, 0.75, -0.75, 1.75, -1.75, 2, -2)
-directions <- c(1, -1)
-
-line_pos <- data.frame(
-    "date"=unique(major_versions_in_2019$date),
-    "position"=rep(positions, length.out=length(unique(major_versions_in_2019$date))),
-    "direction"=rep(directions, length.out=length(unique(major_versions_in_2019$date)))
-)
-
-df <- merge(x=major_versions_in_2019, y=line_pos, by="date", all = TRUE)
-df <- df[with(df, order(date, major_version)), ]
-
-month_buffer <- 1
-
-month_date_range <- seq(min(df$date) - months(month_buffer), max(df$date) + months(month_buffer), by='month')
-month_format <- format(month_date_range, '%b')
-month_df <- data.frame(month_date_range, month_format)
-
-year_date_range <- seq(min(df$date) - months(month_buffer), max(df$date) + months(month_buffer), by='year')
-year_date_range <- as.Date(
-    intersect(
-        ceiling_date(year_date_range, unit="year"),
-        floor_date(year_date_range, unit="year")
-    ),  origin = "1970-01-01"
-)
-year_format <- format(year_date_range, '%Y')
-year_df <- data.frame(year_date_range, year_format)
-
-text_offset <- 0.05
-
-df$month_count <- ave(df$date==df$date, df$date, FUN=cumsum)
-df$text_position <- (df$month_count * text_offset * df$direction) + df$position
-head(df)
-
-#### PLOT ####
-timeline_plot <- df %>% ggplot(
-  aes(x=date, y=0, label=major_version)
-  ) +
-  theme_classic() +
-  geom_hline(
-    yintercept=0,
-    color = "black",
-    size=0.3
-    ) +
-  geom_segment(
-    data=df[df$month_count == 1,], 
-    aes(y=position, yend=0, xend=date), 
-    color='black',
-    size=0.2
-    ) +
-  geom_point(
-    aes(y=0), 
-    size=2
-    ) +
-  theme(
-    axis.line.y=element_blank(),
-    axis.text.y=element_blank(),
-    axis.title.x=element_blank(),
-    axis.title.y=element_blank(),
-    axis.ticks.y=element_blank(),
-    axis.text.x =element_blank(),
-    axis.ticks.x =element_blank(),
-    axis.line.x =element_blank(),
-    legend.position = "bottom"
-    ) +
-  geom_text(
-    data=month_df, 
-    aes(x=month_date_range,y=-0.1,label=month_format),
-    size=2.5,
-    vjust=0.5,
-    color='black',
-    angle=90
-    ) +
-  geom_text(
-    data=year_df, 
-    aes(x=year_date_range,y=2,label=year_format, fontface="bold"),
-    size=5.5,
-    color='black'
-    ) +
-  geom_text(
-    aes(y=text_position,label=major_version),
-    size=2.5
-    )
-
-timeline_plot
 ```
 
 ```{r, echo=FALSE}
@@ -464,9 +283,7 @@ interval_between_major_versions_only %>%
       x = "Date in 2019",
       y = "Count"
     )
-```
 
-```{r, echo=FALSE}
 interval_between_major_versions_only %>% 
   filter(date >= "2018-01-01") %>%
   filter(date < "2019-01-01") %>%
