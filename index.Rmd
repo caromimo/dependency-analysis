@@ -1,5 +1,6 @@
 ---
 title: "Software dependancy analysis"
+author: "C. Mimeault"
 date: "11/11/2020"
 output: html_document
 ---
@@ -345,3 +346,7 @@ Briefly, the data was cleaned in the four main steps:
 4. extracted the version numbers into separate columns for major, minor and patch versions using the semver library.
 
 The cleaned dataset contains the following 12 columns: package_name, version, time_stamp, date, year, month, weekday, major, minor, patch, prerelease, and build.
+
+## Acknowledgments
+
+I would like to thank M. Williasom for the inspiration and the raw data and L. Puts for the help with plots.
