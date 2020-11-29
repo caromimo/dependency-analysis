@@ -286,16 +286,14 @@ interval_between_major_versions_only %>%
 interval_between_major_versions_only %>% 
   filter(date >= "2018-01-01") %>%
   filter(date < "2020-01-01") %>%
-  ggplot(
-    aes(x=days_until_next_major_version)
-    ) +
-    geom_histogram() + 
-    theme_minimal() +
-  labs(
-    title = "Figure 9: Distribution of time between major versions (2018 and 2019)",
-    x = "Time (days) between major versions",
-    y = "Count"
-  ) 
+  ggplot(aes(x=days_until_next_major_version)) +
+    geom_histogram(boundary = 0, binwidth = 5, colour = "black", fill = "white") + 
+    scale_x_continuous(breaks = seq(0, 50, by = 5)) +
+    labs(
+      title = "Figure 9: Distribution of time between major versions (2018 and 2019)",
+      x = "Time (days) between major versions",
+      y = "Count"
+    ) 
 ```
 
 ```{r}
