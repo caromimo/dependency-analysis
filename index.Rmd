@@ -17,6 +17,9 @@ library(semver) # to extract the version numbers into separate columns
 library(formattable) # to format tables
 library(scales)
 library(reshape)
+library(cowplot) # to plot figures side by side
+library(dplyr, warn.conflicts = FALSE)
+options(dplyr.summarise.inform = FALSE)
 ```
 
 ## Context
@@ -107,39 +110,35 @@ heatmap_data %>%
   theme(axis.text.x = element_text(angle = 90))
 ```
 
-**Figure 3** illustrates the total number of versions per year between December 2010 and November 2020 for the packages used in the [dependency manifest file](https://github.com/canada-ca/tracker/blob/003a3d6e0452fb9a248a7d51fd5556bc03dfbcc6/frontend/package.json). Note that at the time of writing this, the year 2020 was not complete. Between 2011 and 2019, there was an increasing number of versions per year, partially due to new packages being created.
+**Figure 3A** illustrates the total number of versions per year between December 2010 and November 2020 for the packages used in the [dependency manifest file](https://github.com/canada-ca/tracker/blob/003a3d6e0452fb9a248a7d51fd5556bc03dfbcc6/frontend/package.json). Note that at the time of writing this, the year 2020 was not complete. Between 2011 and 2019, there was an increasing number of versions per year, partially due to new packages being created. **Figure 3B** illustrates the number of packages used in the [dependency manifest file](https://github.com/canada-ca/tracker/blob/003a3d6e0452fb9a248a7d51fd5556bc03dfbcc6/frontend/package.json) that existed per year between December 2010 and November 2020. Note that at the time of writing this, the year 2020 was not complete. Between 2011 and 2019, there was an increasing number of packages for which versions were being deployer per year.
 
 ```{r, echo=FALSE}
-data %>%
+plot_versions <- data %>%
   group_by(year) %>%
   tally() %>%
   ggplot(aes(year, n)) +
-  geom_col() +
-  theme_classic() +
+  geom_col(colour = "black", fill = "white") +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5)) +
   labs(
-    title = "Figure 3: Number of versions per year",
     x = "Year", 
     y = "Number of versions (major, minor and patches)"
   )
-```
 
-**Figure 4** illustrates the number of packages used in the [dependency manifest file](https://github.com/canada-ca/tracker/blob/003a3d6e0452fb9a248a7d51fd5556bc03dfbcc6/frontend/package.json) that existed per year between December 2010 and November 2020. Note that at the time of writing this, the year 2020 was not complete. Between 2011 and 2019, there was an increasing number of packages for which versions were being deployer per year.
-
-```{r, echo=FALSE}
-data %>%
+plot_packages <- data %>%
   group_by(year) %>%
   summarise(number_of_packages = n_distinct(package_name)) %>%
   ggplot(aes(year, number_of_packages)) +
-  geom_col() +
-  theme_classic() +
+  geom_col(colour = "black", fill = "white") +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5)) +
   labs(
-    title = "Figure 4: Number of packages per year",
     x = "Year", 
     y = "Number of packages"
   )
+
+plot_grid(plot_versions, plot_packages, labels = c('3A', '3B'))
 ```
 
-**Figure 5** illustrates the number of versions per package used in the [dependency manifest file](https://github.com/canada-ca/tracker/blob/003a3d6e0452fb9a248a7d51fd5556bc03dfbcc6/frontend/package.json) that existed per year between December 2010 and November 2020. Note that at the time of writing this, the year 2020 was not complete.
+**Figure 4** illustrates the number of versions per package used in the [dependency manifest file](https://github.com/canada-ca/tracker/blob/003a3d6e0452fb9a248a7d51fd5556bc03dfbcc6/frontend/package.json) that existed per year between December 2010 and November 2020. Note that at the time of writing this, the year 2020 was not complete.
 
 ```{r, echo=FALSE}
 data %>%
@@ -153,7 +152,7 @@ data %>%
   geom_col() +
   theme_classic() +
   labs(
-    title = "Figure 5: Number of versions per package per year",
+    title = "Figure 4: Number of versions per package per year",
     x = "Year", 
     y = "Number of versions per package"
   )
@@ -190,7 +189,7 @@ interval_between_major_versions_only %>%
   ) + 
   theme_minimal() +
   labs(
-    title = "Figure 6: Distribution of time between major versions (all years)",
+    title = "Figure 5: Distribution of time between major versions (all years)",
     x = "Time (days) between major versions",
     y = "Count"
   )
@@ -206,7 +205,7 @@ interval_between_major_versions_only %>%
     ) + 
     theme_minimal() +
   labs(
-    title = "Figure 7: Distribution of time between major versions (by year)",
+    title = "Figure 6: Distribution of time between major versions (by year)",
     x = "Time (days) between major versions",
     y = "Count"
   ) +
@@ -243,7 +242,7 @@ interval_between_major_versions_only %>%
     scale_x_continuous(breaks = seq(0, 50, by = 5)) +
     facet_wrap(~ year) +
     labs(
-      title = "Figure 8: Distribution of time between major versions (2018 and 2019)",
+      title = "Figure 7: Distribution of time between major versions (2018 and 2019)",
       x = "Time (days) between major versions",
       y = "Count"
     )
