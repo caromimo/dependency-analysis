@@ -42,12 +42,14 @@ data <- packages %>%
 ```
 
 ```{r, include=FALSE}
+library(hms)
 data <- data %>%
   mutate(
     date = as.Date(time_stamp, "%Y/%m/%d"),
+    ttime = as.hms(time_stamp, "%H:%M:%S"),
+    time = format(time_stamp, "%H:%M:%S"),
     year = as.factor(year(date)),
     month = as.factor(month(date)),
-    weekday = as.factor(weekdays(date)),
     version = str_replace(version, "^(\\d{1,2}.\\d{1,2}.\\d{1,2})(\\w+)$", "\\1-\\2")
   )
 ```
@@ -200,18 +202,7 @@ interval_between_major_versions_only %>%
   ggplot(aes(x=days_until_next_major_version)) +
   geom_histogram(boundary = 0, binwidth = 20, colour = "black", fill = "white") + 
   labs(
-    title = "Figure 5: Distribution of time between major versions (all years)",
-    x = "Time (days) between major versions",
-    y = "Count"
-  )
-```
-
-```{r, echo=FALSE}
-interval_between_major_versions_only %>% 
-  ggplot(aes(x=days_until_next_major_version)) +
-  geom_histogram(boundary = 0, binwidth = 20, colour = "black", fill = "white") + 
-  labs(
-    title = "Figure 6: Distribution of time between major versions (by year)",
+    title = "Figure 5: Distribution of time between major versions (by year)",
     x = "Time (days) between major versions",
     y = "Count"
   ) +
@@ -248,7 +239,7 @@ interval_between_major_versions_only %>%
     scale_x_continuous(breaks = seq(0, 50, by = 5)) +
     facet_wrap(~ year) +
     labs(
-      title = "Figure 7: Distribution of time between major versions (2018 and 2019)",
+      title = "Figure 6: Distribution of time between major versions (2018 and 2019)",
       x = "Time (days) between major versions",
       y = "Count"
     )
@@ -262,7 +253,7 @@ interval_between_major_versions_only %>%
     geom_histogram(boundary = 0, binwidth = 5, colour = "black", fill = "white") + 
     scale_x_continuous(breaks = seq(0, 50, by = 5)) +
     labs(
-      title = "Figure 9: Distribution of time between major versions (2018 and 2019)",
+      title = "Figure 7: Distribution of time between major versions (2018 and 2019)",
       x = "Time (days) between major versions",
       y = "Count"
     ) 
@@ -292,8 +283,20 @@ major_versions_in_2019 <- interval_between_major_versions_only %>%
   filter(date < "2020-01-01")
 ```
 
+
 ```{r, echo=FALSE}
-interval_between_major_versions_only %>% 
+timeline_2018 <- interval_between_major_versions_only %>% 
+  filter(date >= "2018-01-01") %>%
+  filter(date < "2019-01-01") %>%
+  ggplot(aes(x=date)) +
+    geom_bar(colour = "black", fill = "white") + 
+    labs(
+      title = "Figure X: Major versions per date in 2018",
+      x = "Date in 2018",
+      y = "Count"
+    )
+
+timeline_2019 <- interval_between_major_versions_only %>% 
   filter(date >= "2019-01-01") %>%
   filter(date < "2020-01-01") %>%
   ggplot(aes(x=date)) +
@@ -304,16 +307,7 @@ interval_between_major_versions_only %>%
       y = "Count"
     )
 
-interval_between_major_versions_only %>% 
-  filter(date >= "2018-01-01") %>%
-  filter(date < "2019-01-01") %>%
-  ggplot(aes(x=date)) +
-    geom_bar(colour = "black", fill = "white") + 
-    labs(
-      title = "Figure X: Major versions per date in 2018",
-      x = "Date in 2018",
-      y = "Count"
-    )
+plot_grid(timeline_2018, timeline_2019, labels = c('A', 'B'))
 ```
 
 ## Methods
@@ -345,7 +339,7 @@ Briefly, the data was cleaned in the four main steps:
 3. extracted the date from the time stamp, extracted the year as a factor, extracted the month as a factor, extracted the day of the week as a factor and parsed the version number to only include the first three numbers and the dots separating the numbers; and
 4. extracted the version numbers into separate columns for major, minor and patch versions using the semver library.
 
-The cleaned dataset contains the following 12 columns: package_name, version, time_stamp, date, year, month, weekday, major, minor, patch, prerelease, and build.
+The cleaned dataset contains the following 12 columns: package_name, version, time_stamp, date, time, year, month, major, minor, patch, prerelease, and build.
 
 ## Acknowledgments
 
