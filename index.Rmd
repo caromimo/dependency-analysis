@@ -64,7 +64,7 @@ data <- add_column(
 
 ## Analysis
 
-### Descriptive statistics (all versions)
+### Number of versions
 
 The [dependency manifest file](https://github.com/canada-ca/tracker/blob/003a3d6e0452fb9a248a7d51fd5556bc03dfbcc6/frontend/package.json) uses a total of 72 packages, which, all together, were updated through major, minor, patches and pre-releases in a total of 7,322 versions since December 29th 2010. Of those, 2,660 (36%) were pre-releases which were removed as they are not expected to significantly impact development and maintenance of the [dependency manifest file](https://github.com/canada-ca/tracker/blob/003a3d6e0452fb9a248a7d51fd5556bc03dfbcc6/frontend/package.json). 
 
@@ -176,7 +176,7 @@ plot_grid(plot_all_versions_per_package_per_year, plot_major_versions_per_packag
 
 ### Time between major versions
 
-In theory, minor versions and patches do not require code changes but major versions do. Since December 2010, there were 262 major versions of the packages used in the [dependency manifest file](https://github.com/canada-ca/tracker/blob/003a3d6e0452fb9a248a7d51fd5556bc03dfbcc6/frontend/package.json), representing less than 4% of all versions. 
+In theory, minor versions and patches do not require code changes but major versions do. Since December 2010, there were 262 major versions of the packages used in the [dependency manifest file](https://github.com/canada-ca/tracker/blob/003a3d6e0452fb9a248a7d51fd5556bc03dfbcc6/frontend/package.json), representing less than 4% of all versions. **Figure 5** illustrates the distribution of the time between major versions by year. In this figure and in the table below, We can see that the long periods between major versions occured in 2011 (585 days) and 2012 (210 days). We can also see that the median and the average time between the major versions were highly variable before 2015. 
 
 ```{r, include=FALSE}
 major_versions_only <- data %>% 
@@ -224,10 +224,7 @@ formattable(
   )
 ```
 
-**Figure 5** illustrates the distribution of the time between major versions broken per year. In this figure and in the table below, We can see that the long periods between major versions occured in 2011 (585 days) and 2012 (210 days). We can also see that the median and the average time between the major versions were highly variable before 2015. **Figure 2** also illustrates that updates to all packages starting with @ started in 2018. This represents a change in the packages were names using [scopes](https://blog.npmjs.org/post/116936804365/solving-npms-hard-problem-naming-packages). 
-
-**Figure 7** demonstrates the differences between 
-The distributions (Figure 7, the number of versions per year and the average time between major versions of days between major versions changeaverage time between major versions 
+**Figure 2** also illustrates that updates to packages starting with @ all started in 2018. The use of the @ in a package name at the beginning of a packages name is refered to as [scopes](https://blog.npmjs.org/post/116936804365/solving-npms-hard-problem-naming-packages). Given the variation in earlier years, and the introduction of several packages in 2018, the years 2018 and 2019 would be the most representative of the time between major version once the he the [dependency manifest file](https://github.com/canada-ca/tracker/blob/003a3d6e0452fb9a248a7d51fd5556bc03dfbcc6/frontend/package.json) will be in production. **Figure 6** illustrates the distribution of the time between major versions in 2018 and 2019 and **Figure 7** illustrates the same for both years pulled together. In those two years, the average time between major version was 8 days and the median was 4 days.
 
 ```{r, echo=FALSE}
 interval_between_major_versions_only %>% 
@@ -258,7 +255,7 @@ interval_between_major_versions_only %>%
     ) 
 ```
 
-```{r}
+```{r, include=FALSE}
 interval_between_major_versions_only %>% 
   filter(date >= "2018-01-01") %>%
   filter(date < "2020-01-01") %>%
@@ -270,18 +267,7 @@ interval_between_major_versions_only %>%
   ) 
 ```
 
-```{r, echo=FALSE}
-major_versions_in_2018 <- interval_between_major_versions_only %>%
-  filter(date >= "2018-01-01") %>%
-  filter(date < "2019-01-01")
-```
-
-```{r, echo=FALSE}
-major_versions_in_2019 <- interval_between_major_versions_only %>%
-  filter(date >= "2019-01-01") %>%
-  filter(date < "2020-01-01")
-```
-
+The two figures below illustrates major version over the years of 2018 and 2019. 
 
 ```{r, echo=FALSE}
 timeline_2018 <- interval_between_major_versions_only %>% 
@@ -306,6 +292,10 @@ timeline_2019 <- interval_between_major_versions_only %>%
 
 plot_grid(timeline_2018, timeline_2019, ncol = 1)
 ```
+
+## Conclusions
+
+Once completed, the programmers that developed the [dependency manifest file](https://github.com/canada-ca/tracker/blob/003a3d6e0452fb9a248a7d51fd5556bc03dfbcc6/frontend/package.json) can expect major updates to their dependancies every 4 to 8 days.
 
 ## Methods
 
