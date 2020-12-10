@@ -28,7 +28,7 @@ Open source projects rely on libraries that get updated regularly. While not all
 
 According to [semantic versioning](https://semver.org), versions are numbered incrementally according to the type of change. A "MAJOR version" signifies incompatible API changes, a "MINOR version" signifies added functionality in a backwards compatible manner, and a "PATCH version" signifies backwards compatible bug fixes. Additionally, the label "pre-release" can also be used, and is defined as a version that indicates "...that the version is unstable and might not satisfy the intended compatibility requirements as denoted by its associated normal version."
 
-This project explores the number and frequency of updates in a project currently under development. It aims to shed light on the update requirements once the project will be in production. We used the [dependency manifest file](https://github.com/canada-ca/tracker/blob/003a3d6e0452fb9a248a7d51fd5556bc03dfbcc6/frontend/package.json) from the frontend of Government of Canada's Tracker project as a representative example of a modern software project. Method and steps to gather and clean the data are described at the end of this post.
+In this project, I explored the number and frequency of updates in a project currently under development to characterize the update requirements once the project will be in production. I used the [dependency manifest file](https://github.com/canada-ca/tracker/blob/003a3d6e0452fb9a248a7d51fd5556bc03dfbcc6/frontend/package.json) from the frontend of Government of Canada's Tracker project as a representative example of a modern software project. the methods and steps to gather and clean the data are described at the end of this post in the Methods section.
 
 ```{r, include=FALSE}
 packages <- read_csv(here("data", "processed", "nodejs.csv"), col_names = c("package_name", "version", "time_stamp"))
@@ -66,14 +66,14 @@ data <- add_column(
 
 ### Number of versions
 
-The [dependency manifest file](https://github.com/canada-ca/tracker/blob/003a3d6e0452fb9a248a7d51fd5556bc03dfbcc6/frontend/package.json) uses a total of 72 packages, which, all together, were updated through major, minor, patches and pre-releases in a total of 7,322 versions since December 29th 2010. Of those, 2,660 (36%) were pre-releases which were removed as they are not expected to significantly impact development and maintenance of the [dependency manifest file](https://github.com/canada-ca/tracker/blob/003a3d6e0452fb9a248a7d51fd5556bc03dfbcc6/frontend/package.json). 
+The [dependency manifest file](https://github.com/canada-ca/tracker/blob/003a3d6e0452fb9a248a7d51fd5556bc03dfbcc6/frontend/package.json) uses a total of 72 packages, which, all together, were updated through major, minor, patches and pre-releases in a total of 7,322 versions since December 29th, 2010. Of those, 2,660 (36%) were pre-releases which I removed as they are not expected to significantly impact development and maintenance of the [dependency manifest file](https://github.com/canada-ca/tracker/blob/003a3d6e0452fb9a248a7d51fd5556bc03dfbcc6/frontend/package.json). 
 
 ```{r, include=FALSE}
 data <- data %>% 
   filter(prerelease == "") 
 ```
 
-**Figure 1** is a plot of the number of versions for each package in this time period, with the package with the most versions at the top (webpack had 307 versions) and the package with the least versions at the bottom (webpack-config-utils had six versions). **Figure 1** illustrates the variation in the number of versions among packages. Note that this might be due to the creation date of packages as they did not all exist in December 2010.
+**Figure 1** is a plot of the number of versions for each package since December 29th, 2010 ordered by number of versions. The package with the most versions is at the top (webpack had 307 versions) and the package with the least versions is at the bottom (webpack-config-utils had six versions). **Figure 1** demonstrates the variability in the number of versions among packages. Note that not all packages existed in December 2010 and the creation date of packages might account for some of this variability.
 
 ```{r, fig.height=18, echo=FALSE}
 data %>% 
