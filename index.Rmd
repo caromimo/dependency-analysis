@@ -1,13 +1,14 @@
 ---
 title: "Software dependancy analysis"
 author: "C. Mimeault"
-date: "11/11/2020"
+date: "January 1, 2021"
 output: html_document
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 rm(list = ls())
+# using R version 4.0.3 (2020-10-10)
 ```
 
 ```{r libraries, include=FALSE}
@@ -24,11 +25,9 @@ library(hms) # to extract the time
 
 ## Context
 
-Open source projects rely on libraries that get updated regularly. While not all updates require code changes, some do. 
+Open source projects rely on libraries that get updated regularly. While not all updates require code changes, some do. According to [semantic versioning](https://semver.org), versions are numbered incrementally according to the type of change. A "MAJOR version" signifies incompatible API changes, a "MINOR version" signifies added functionality in a backwards compatible manner, and a "PATCH version" signifies backwards compatible bug fixes. Additionally, the label "pre-release" can also be used, and is defined as a version that indicates "...that the version is unstable and might not satisfy the intended compatibility requirements as denoted by its associated normal version."
 
-According to [semantic versioning](https://semver.org), versions are numbered incrementally according to the type of change. A "MAJOR version" signifies incompatible API changes, a "MINOR version" signifies added functionality in a backwards compatible manner, and a "PATCH version" signifies backwards compatible bug fixes. Additionally, the label "pre-release" can also be used, and is defined as a version that indicates "...that the version is unstable and might not satisfy the intended compatibility requirements as denoted by its associated normal version."
-
-In this project, I explored the number and frequency of updates in a project currently under development to characterize the update requirements once the project will be in production. I used the [dependency manifest file](https://github.com/canada-ca/tracker/blob/003a3d6e0452fb9a248a7d51fd5556bc03dfbcc6/frontend/package.json) from the frontend of Government of Canada's Tracker project as a representative example of a modern software project. the methods and steps to gather and clean the data are described at the end of this post in the Methods section.
+In this project, I explored the number and frequency of updates in a project currently under development to characterize the update requirements once the project will be "done" and in production. I used the [dependency manifest file](https://github.com/canada-ca/tracker/blob/003a3d6e0452fb9a248a7d51fd5556bc03dfbcc6/frontend/package.json) from the frontend of Government of Canada's Tracker project as a representative example of a modern software project. Refer to the Methods section at the end of this post for details on the steps to gather and to clean the data.
 
 ```{r, include=FALSE}
 packages <- read_csv(here("data", "processed", "nodejs.csv"), col_names = c("package_name", "version_number", "time_stamp"))
@@ -62,52 +61,18 @@ data <- add_column(
   arrange(major, minor, patch)
 ```
 
-```{r}
-data <- data %>%
-  mutate(
-    version_type = if_else(prerelease != "", "pre-release", 
-                           if_else(patch == "0", "patch",
-                                   if_else(minor == "0", "minor", "major"))) 
-  )
-```
-
-
-<!-- ```{r} -->
-<!-- data <- data %>% -->
-<!--   mutate( -->
-<!--     version_type = if(prerelease != "", "pre-release") -->
-<!--     version_type = if(patch == "0", "patch", -->
-<!--                                    if_else(minor == "0", "minor", "major")))  -->
-<!--   ) -->
-<!-- ``` -->
-
-weeks <- as.data.frame(weeks)
-
-versions_in_a_year <- weeks %>% mutate(weeks = weeks, number_major_versions = weeks * 0.875, number_mmp = weeks * 14.029)
-
-versions_in_a_year %>% ggplot(aes(x=weeks, y=number_major_versions)) + geom_point() + labs(y="Expected number of new major versions since last update") + scale_x_continuous(name="Weeks since last major version was updated", breaks = seq(min(major_versions_in_a_year$weeks), max(major_versions_in_a_year$weeks), by = 4))
-
-versions_in_a_year %>% ggplot(aes(x=weeks, y=number_major_versions)) + geom_point() + labs(y="Expected number of new major versions since last update") + scale_x_continuous(name="Weeks since last major version was updated", breaks = seq(min(versions_in_a_year$weeks), max(versions_in_a_year$weeks), by = 4))
-
-ggplot(versions_in_a_year, aes(x=weeks, y = value, color = variable)) + 
-    geom_line(aes(y = number_major_versions, col = "major versions only")) + 
-    geom_line(aes(y = number_mmp, col = "major, minor, patches")) + 
-    scale_x_continuous(name="Weeks since last update", breaks = seq(min(versions_in_a_year$weeks), max(versions_in_a_year$weeks), by = 4)) + 
-    labs(y="Expected number new versions since last update") 
-    
-
 ## Analysis
 
 ### Number of versions
 
-The [dependency manifest file](https://github.com/canada-ca/tracker/blob/003a3d6e0452fb9a248a7d51fd5556bc03dfbcc6/frontend/package.json) uses a total of 72 packages, which, all together, were updated through major, minor, patches and pre-releases in a total of 7,322 versions since December 29th, 2010. Of those, 2,660 (36%) were pre-releases which I removed as they are not expected to significantly impact development and maintenance of the [dependency manifest file](https://github.com/canada-ca/tracker/blob/003a3d6e0452fb9a248a7d51fd5556bc03dfbcc6/frontend/package.json). 
+As of today, the [dependency manifest file](https://github.com/canada-ca/tracker/blob/003a3d6e0452fb9a248a7d51fd5556bc03dfbcc6/frontend/package.json) uses a total of 72 packages, which, all together, were updated through major, minor, patches and pre-releases in a total of 7,461 versions since December 29th, 2010. Of those, 2,698 (36%) were pre-releases which I removed as they are not expected to significantly impact development and maintenance of the [dependency manifest file](https://github.com/canada-ca/tracker/blob/003a3d6e0452fb9a248a7d51fd5556bc03dfbcc6/frontend/package.json) once in production leaving a total of 4,763 versions including major, minor and patches.
 
 ```{r, include=FALSE}
 data <- data %>% 
   filter(prerelease == "") 
 ```
 
-**Figure 1** is a plot of the number of versions for each package since December 29th, 2010 ordered by number of versions. The package with the most versions is at the top (webpack had 307 versions) and the package with the least versions is at the bottom (webpack-config-utils had six versions). **Figure 1** demonstrates the variability in the number of versions among packages. Note that not all packages existed in December 2010 and the creation date of packages might account for some of this variability.
+**Figure 1** is a plot of the number of versions (major, minor and patches) for each package since December 29th, 2010. The package with the most versions is at the top (webpack with 319 versions) and the package with the least versions is at the bottom (webpack-config-utils with 6 versions). **Figure 1** demonstrates the variability in the number of versions among packages. Note that not all packages existed in December 2010 and the creation date of packages might account for some of this variability.
 
 ```{r, fig.height=18, echo=FALSE}
 data %>% 
@@ -122,7 +87,7 @@ data %>%
   )
 ```
 
-**Figure 2** is a heatmap of the number of versions per year per package with packages organised in alphabetical order on the y-axis. The more versions in a year for a given package, the darker the color (see legend). This figure illustrates that packages were created in every year between 2011 and 2019 and that the number of versions per package per year is highly variable. Some packages had most of their versions in the early years of their creation (e.g., babel-core), others had most versions in recent years (e.g., react) and others had no clear trends (e.g., d3). Note that at the time of writing this, the year 2020 was not complete.  
+**Figure 2** is a heatmap of the number of versions per year per package with packages organised in alphabetical order on the y-axis. The more versions in a year for a given package, the darker the color (see legend). This figure demonstrates that packages were created in every year between 2011 and 2019 and that the number of versions per package per year is highly variable among packages and years. Some packages had most of their versions in the early years after their creation and are no longer updated (e.g., babel-core), others had most versions in recent years (e.g., eslint-plugin-react) and others had no clear trends (e.g., d3). Also note that since 2018, some packages switched to [scope packages](https://docs.npmjs.com/cli/v6/using-npm/scope) such as babel-core which is now ["@babel/core"](https://babeljs.io/docs/en/v7-migration#scoped-packages). For the purpose of this analysis, those packages are treated as different packages. 
 
 ```{r, fig.height=18, echo=FALSE}
 heatmap_data <- data %>% group_by(year, package_name) %>% tally()
@@ -142,20 +107,9 @@ heatmap_data %>%
   theme(axis.text.x = element_text(angle = 90))
 ```
 
-**Figure 3A** illustrates the total number of versions per year between December 2010 and November 2020 for the packages used in the [dependency manifest file](https://github.com/canada-ca/tracker/blob/003a3d6e0452fb9a248a7d51fd5556bc03dfbcc6/frontend/package.json). Note that at the time of writing this, the year 2020 was not complete. Between 2011 and 2019, there was an increasing number of versions per year, partially due to new packages being created. **Figure 3B** illustrates the number of packages used in the [dependency manifest file](https://github.com/canada-ca/tracker/blob/003a3d6e0452fb9a248a7d51fd5556bc03dfbcc6/frontend/package.json) that existed per year between December 2010 and November 2020. Note that at the time of writing this, the year 2020 was not complete. Between 2011 and 2019, there was an increasing number of packages for which versions were being deployer per year.
+**Figure 3A** illustrates the number of packages used in the [dependency manifest file](https://github.com/canada-ca/tracker/blob/003a3d6e0452fb9a248a7d51fd5556bc03dfbcc6/frontend/package.json) that existed per year between December 29th, 2010 and December 31st, 2020 while **Figure 3B** illustrates the total number of versions per year for the same period of time. The number of packages increased between 2011 and 2018 but appears to have stabilised since while the number of versions appears to be more or less stable since 2015.
 
 ```{r, echo=FALSE}
-plot_versions <- data %>%
-  group_by(year) %>%
-  tally() %>%
-  ggplot(aes(year, n)) +
-  geom_col(colour = "black", fill = "white") +
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5)) +
-  labs(
-    x = "Year", 
-    y = "Number of versions (major, minor and patches)"
-  )
-
 plot_packages <- data %>%
   group_by(year) %>%
   summarise(number_of_packages = n_distinct(package_name)) %>%
@@ -167,7 +121,18 @@ plot_packages <- data %>%
     y = "Number of packages"
   )
 
-plot_grid(plot_versions, plot_packages, labels = c('3A', '3B'))
+plot_versions <- data %>%
+  group_by(year) %>%
+  tally() %>%
+  ggplot(aes(year, n)) +
+  geom_col(colour = "black", fill = "white") +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5)) +
+  labs(
+    x = "Year", 
+    y = "Number of versions (major, minor and patches)"
+  )
+
+plot_grid(plot_packages, plot_versions, labels = c('3A', '3B'))
 ```
 
 **Figure 4A** illustrates the number of versions (major, minor and patches) per package used in the [dependency manifest file](https://github.com/canada-ca/tracker/blob/003a3d6e0452fb9a248a7d51fd5556bc03dfbcc6/frontend/package.json) per year between December 2010 and November 2020. **Figure 4B** focuses on the number of major versions per package per year. Note that at the time of writing this, the year 2020 was not complete.
