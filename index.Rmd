@@ -61,6 +61,14 @@ data <- add_column(
   arrange(major, minor, patch)
 ```
 
+```{r}
+data <- data %>%
+  mutate(
+    version_type = ifelse(prerelease != "", "pre-release",
+                           ifelse(minor == "0" & patch == "0", "major",
+                                   ifelse(patch == "0", "minor", "patch"))))
+```
+
 ## Analysis
 
 ### Number of versions
@@ -68,7 +76,7 @@ data <- add_column(
 As of today, the [dependency manifest file](https://github.com/canada-ca/tracker/blob/003a3d6e0452fb9a248a7d51fd5556bc03dfbcc6/frontend/package.json) uses a total of 72 packages, which, all together, were updated through major, minor, patches and pre-releases in a total of 7,461 versions since December 29th, 2010. Of those, 2,698 (36%) were pre-releases which I removed as they are not expected to significantly impact development and maintenance of the [dependency manifest file](https://github.com/canada-ca/tracker/blob/003a3d6e0452fb9a248a7d51fd5556bc03dfbcc6/frontend/package.json) once in production leaving a total of 4,763 versions including major, minor and patches.
 
 ```{r, include=FALSE}
-data <- data %>% 
+data2 <- data %>% 
   filter(prerelease == "") 
 ```
 
@@ -300,7 +308,7 @@ Once completed, the programmers that developed the [dependency manifest file](ht
 
 ### Writing the data to a JSON file
 
-The manifest was retrieved using [curl](https://curl.se/) with the following command on November 12, 2020.
+The manifest was retrieved using [curl](https://curl.se/) with the following command on January 1, 2021.
 ```
 curl -sL "https://raw.githubusercontent.com/canada-ca/tracker/003a3d6e0452fb9a248a7d51fd5556bc03dfbcc6/frontend/package.json" > data/raw/tracker-frontend-package.json
 ```
