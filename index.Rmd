@@ -1,7 +1,7 @@
 ---
 title: "Software dependancy analysis"
 author: "C. Mimeault"
-date: "January 1, 2021"
+date: "January 3, 2021"
 output: html_document
 ---
 
@@ -61,7 +61,7 @@ data <- add_column(
   arrange(major, minor, patch)
 ```
 
-```{r}
+```{r, include=FALSE}
 data <- data %>%
   mutate(
     version_type = ifelse(prerelease != "", "pre-release",
