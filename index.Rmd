@@ -69,21 +69,17 @@ data <- data %>%
                                    ifelse(patch == "0", "minor", "patch"))))
 ```
 
-## Analysis
+## Exploring the data
 
 ### Number of versions
 
 As of today, the [dependency manifest file](https://github.com/canada-ca/tracker/blob/003a3d6e0452fb9a248a7d51fd5556bc03dfbcc6/frontend/package.json) uses a total of 72 packages, which, all together, were updated through major, minor, patches and pre-releases in a total of 7,461 versions since December 29th, 2010. Of those, 2,698 (36%) were pre-releases which I removed as they are not expected to significantly impact development and maintenance of the [dependency manifest file](https://github.com/canada-ca/tracker/blob/003a3d6e0452fb9a248a7d51fd5556bc03dfbcc6/frontend/package.json) once in production leaving a total of 4,763 versions including major, minor and patches.
 
-```{r, include=FALSE}
-data2 <- data %>% 
-  filter(prerelease == "") 
-```
-
 **Figure 1** is a plot of the number of versions (major, minor and patches) for each package since December 29th, 2010. The package with the most versions is at the top (webpack with 319 versions) and the package with the least versions is at the bottom (webpack-config-utils with 6 versions). **Figure 1** demonstrates the variability in the number of versions among packages. Note that not all packages existed in December 2010 and the creation date of packages might account for some of this variability.
 
 ```{r, fig.height=18, echo=FALSE}
 data %>% 
+  filter(version_type != "pre-release") %>%
   count(package_name, sort = TRUE) %>%
   mutate(package_name = fct_reorder(package_name, n)) %>%
   ggplot(aes(n, package_name)) +
