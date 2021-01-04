@@ -94,9 +94,22 @@ data %>%
             vjust = 1.4, size = 4, color = "black")
 ```
 
-I then removed the pre-release versions from the remaining of the analysis as I was interested in the maintenance of the [dependency manifest file](https://github.com/canada-ca/tracker/blob/003a3d6e0452fb9a248a7d51fd5556bc03dfbcc6/frontend/package.json) once in production leaving a total of 4,763 versions including major, minor and patches. 
+I then removed the pre-release versions from the remaining of the analysis as I was mainly interested in the maintenance of the [dependency manifest file](https://github.com/canada-ca/tracker/blob/003a3d6e0452fb9a248a7d51fd5556bc03dfbcc6/frontend/package.json) once in production leaving a total of 4,763 versions including major, minor and patches. **Figure 2** demonstrates that the number of stable versions (major, minor and patches) increased between 2010 and 2015 but has been relatively stable since then.
 
-**Figure 2** is a plot of the number of versions (major, minor and patches) for each package since December 29th, 2010. The package with the most versions is at the top (webpack with 319 versions) and the package with the least versions is at the bottom (webpack-config-utils with 6 versions). **Figure 2** demonstrates the variability in the number of versions among packages. Note that not all packages existed in December 2010 and the creation date of packages might account for some of this variability.
+```{r, echo=FALSE}
+data %>%
+  filter(version_type != "pre-release") %>%
+  ggplot(aes(x=year, fill=version_type)) +
+  geom_bar(colour = "black") +
+  scale_fill_manual(name = "version type:", values=c("#f1faee","#a8dadc","#457b9d","#1d3557")) +
+  labs(
+    title = "Figure 2: Number of versions per year", 
+    x = "Year", 
+    y = "Number of versions"
+  )
+```
+
+**Figure 3** is a plot of the number of versions (major, minor and patches) for each package since December 29th, 2010. The package with the most versions is at the top (webpack with 319 versions) and the package with the least versions is at the bottom (webpack-config-utils with 6 versions). **Figure 3** demonstrates the variability in the number of versions among packages. Note that not all packages existed in December 2010 and the creation date of packages might account for some of this variability.
 
 ```{r, fig.height=18, echo=FALSE}
 data %>% 
@@ -106,7 +119,7 @@ data %>%
   ggplot(aes(n, package_name)) +
   geom_col(colour = "black", fill = "white") +
   labs(
-    title = "Figure 2: Number of versions for each package",
+    title = "Figure 3: Number of versions for each package",
     x = "Number of versions (majors, minors, patches and pre-releases)", 
     y = "Package name"
   )
