@@ -72,7 +72,7 @@ data <- data %>%
 ## Exploring the data
 
 ### Number of packages
-The [dependency manifest file](https://github.com/canada-ca/tracker/blob/003a3d6e0452fb9a248a7d51fd5556bc03dfbcc6/frontend/package.json) uses a total of 72 packages. As packages were created and updated through time, **Figure 1** demonstrates that the annual number of updates increased from 2010 to 2018.
+The [dependency manifest file](https://github.com/canada-ca/tracker/blob/003a3d6e0452fb9a248a7d51fd5556bc03dfbcc6/frontend/package.json) uses a total of 72 different packages. As those were created and updated through time, **Figure 1** demonstrates that the annual number of updates increased from 2010 to 2018.
 ```{r, echo=FALSE}
 data %>%
   group_by(year) %>%
@@ -110,8 +110,10 @@ data %>%
 I then removed the pre-release versions from the remaining of the analysis as I was mainly interested in the maintenance of the [dependency manifest file](https://github.com/canada-ca/tracker/blob/003a3d6e0452fb9a248a7d51fd5556bc03dfbcc6/frontend/package.json) once in production leaving a total of 4,763 stable versions (i.e., major, minor and patches). **Figure 3** demonstrates that the number of stable versions (major, minor and patches) increased between 2010 and 2015 but has been relatively stable since then.
 
 ```{r, echo=FALSE}
-data %>%
-  filter(version_type != "pre-release") %>%
+stable_versions <- data %>%
+  filter(version_type != "pre-release")
+
+stable_versions %>%
   ggplot(aes(x=year, fill=version_type)) +
   geom_bar(colour = "black") +
   scale_fill_manual(name = "version type:", values=c("#f1faee","#a8dadc","#457b9d","#1d3557")) +
@@ -122,8 +124,54 @@ data %>%
   )
 ```
 
+### Dependencies maintenance
 
+With an average of 675 stable updates (major, minor and patches) annually since 2015 to packages used in [Tracker project](https://github.com/canada-ca/tracker), once in production, the project will require maintenance to keep the dependancies up to date.
+```{r, echo=FALSE}
+average_table <- stable_versions %>%
+  filter(date >= "2015-01-01") %>%
+  group_by(year) %>%
+  summarise("number of stable versions" = n())
+```
 
+```{r, echo=FALSE}
+formattable(
+  average_table,
+  align =c("l","c")
+  )
+```
+
+```{r, include=FALSE}
+mean(average_table$`number of stable versions`)
+```
+
+```{r}
+stable_versions %>%
+  filter(date >= "2015-01-01") %>%
+  group_by(version_type) %>%
+  summarise(n = n()) %>%
+  mutate(annual_average = n / 6) %>%
+  mutate(monthly_average = n / (6 * 12)) %>%
+  mutate(weekly_average = n / (6 * 52))
+```
+
+weeks <- as.data.frame(weeks)
+
+versions_in_a_year <- weeks %>% mutate(weeks = weeks, number_major_versions = weeks * 0.875, number_mmp = weeks * 14.029) -->
+
+versions_in_a_year %>% ggplot(aes(x=weeks, y=number_major_versions)) + geom_point() + labs(y="Expected number of new major versions since last update") + scale_x_continuous(name="Weeks since last major version was updated", breaks = seq(min(major_versions_in_a_year$weeks), max(major_versions_in_a_year$weeks), by = 4))
+
+versions_in_a_year %>% ggplot(aes(x=weeks, y=number_major_versions)) + geom_point() + labs(y="Expected number of new major versions since last update") + scale_x_continuous(name="Weeks since last major version was updated", breaks = seq(min(versions_in_a_year$weeks), max(versions_in_a_year$weeks), by = 4))
+      
+ggplot(versions_in_a_year, aes(x=weeks, y = value, color = variable)) + 
+geom_line(aes(y = number_major_versions, col = "major versions only")) +  
+geom_line(aes(y = number_mmp, col = "major, minor, patches")) + 
+scale_x_continuous(name="Weeks since last update", breaks = seq(min(versions_in_a_year$weeks), max(versions_in_a_year$weeks), by = 4)) +  labs(y="Expected number new versions since last update")
+      
+      
+      
+      
+      
 **Figure 3** is a plot of the number of versions (major, minor and patches) for each package since December 29th, 2010. The package with the most versions is at the top (webpack with 319 versions) and the package with the least versions is at the bottom (webpack-config-utils with 6 versions). **Figure 3** demonstrates the variability in the number of versions among packages. Note that not all packages existed in December 2010 and the creation date of packages might account for some of this variability.
 
 ```{r, fig.height=18, echo=FALSE}
