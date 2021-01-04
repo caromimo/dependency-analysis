@@ -1,7 +1,7 @@
 ---
 title: "Software dependancy analysis"
 author: "C. Mimeault"
-date: "January 3, 2021"
+date: "January 4, 2021"
 output: html_document
 ---
 
@@ -71,11 +71,24 @@ data <- data %>%
 
 ## Exploring the data
 
+### Number of packages
+The [dependency manifest file](https://github.com/canada-ca/tracker/blob/003a3d6e0452fb9a248a7d51fd5556bc03dfbcc6/frontend/package.json) uses a total of 72 packages. As packages were created and updated through time, **Figure 1** demonstrates that the annual number of updates increased from 2010 to 2018.
+```{r, echo=FALSE}
+data %>%
+  group_by(year) %>%
+  summarise(number_of_packages = n_distinct(package_name)) %>%
+  ggplot(aes(year, number_of_packages)) +
+  geom_col(colour = "black", fill = "white") +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5)) +
+  labs(
+    title = "Figure 1: Number of packages updated per year", 
+    x = "Year", 
+    y = "Number of packages updated"
+  )
+```
+
 ### Number of versions
-
-As of today, the [dependency manifest file](https://github.com/canada-ca/tracker/blob/003a3d6e0452fb9a248a7d51fd5556bc03dfbcc6/frontend/package.json) uses a total of 72 packages which were updated in a total of 7,461 versions since December 29th, 2010. Those updates included major versions, minor versions, patches and pre-release versions. 
-
-**Figure 1** demonstrates that most of the updates between December 2010 and December 2020 were patches (40.4%), followed by pre-release versions (36.2%), minor versions (19.8%) and finally, major versions (3.6%).
+The 72 packages used in the [dependency manifest file](https://github.com/canada-ca/tracker/blob/003a3d6e0452fb9a248a7d51fd5556bc03dfbcc6/frontend/package.json) were updated through a total of 7,461 versions between December 29th, 2010 and December 31st, 2020. Those updates included major versions, minor versions, patches and pre-release versions. **Figure 2** demonstrates that most of those updates were patches (40.4%), followed by pre-release versions (36.2%), minor versions (19.8%) and, finally, major versions (3.6%).
 
 ```{r, echo=FALSE}
 data %>%
@@ -86,7 +99,7 @@ data %>%
   geom_col(colour = "black", fill = "white") +
   theme() +
   labs(
-    title = "Figure 1: Breakdown of types of versions between December 2010 and 2020", 
+    title = "Figure 2: Breakdown of types of versions between December 2010 and 2020", 
     x = "Version type", 
     y = "Percent of all versions"
   ) +
@@ -94,7 +107,7 @@ data %>%
             vjust = 1.4, size = 4, color = "black")
 ```
 
-I then removed the pre-release versions from the remaining of the analysis as I was mainly interested in the maintenance of the [dependency manifest file](https://github.com/canada-ca/tracker/blob/003a3d6e0452fb9a248a7d51fd5556bc03dfbcc6/frontend/package.json) once in production leaving a total of 4,763 versions including major, minor and patches. **Figure 2** demonstrates that the number of stable versions (major, minor and patches) increased between 2010 and 2015 but has been relatively stable since then.
+I then removed the pre-release versions from the remaining of the analysis as I was mainly interested in the maintenance of the [dependency manifest file](https://github.com/canada-ca/tracker/blob/003a3d6e0452fb9a248a7d51fd5556bc03dfbcc6/frontend/package.json) once in production leaving a total of 4,763 stable versions (i.e., major, minor and patches). **Figure 3** demonstrates that the number of stable versions (major, minor and patches) increased between 2010 and 2015 but has been relatively stable since then.
 
 ```{r, echo=FALSE}
 data %>%
@@ -103,11 +116,13 @@ data %>%
   geom_bar(colour = "black") +
   scale_fill_manual(name = "version type:", values=c("#f1faee","#a8dadc","#457b9d","#1d3557")) +
   labs(
-    title = "Figure 2: Number of versions per year", 
+    title = "Figure 3: Number of versions per year", 
     x = "Year", 
     y = "Number of versions"
   )
 ```
+
+
 
 **Figure 3** is a plot of the number of versions (major, minor and patches) for each package since December 29th, 2010. The package with the most versions is at the top (webpack with 319 versions) and the package with the least versions is at the bottom (webpack-config-utils with 6 versions). **Figure 3** demonstrates the variability in the number of versions among packages. Note that not all packages existed in December 2010 and the creation date of packages might account for some of this variability.
 
