@@ -657,14 +657,15 @@ standard_deviation
 <div id="cleaning-the-csv-file" class="section level3">
 <h3>Cleaning the CSV file</h3>
 <p>The data needed a little attention before conducting analysis. The reader is referred to the <a href="https://github.com/caromimo/dependency-analysis/blob/master/index.Rmd">Rmarkdown file</a> for code and details.</p>
-<p>Briefly, the data was cleaned in the four main steps:</p>
+<p>Briefly, the data was cleaned in the following five main steps:</p>
 <ol style="list-style-type: decimal">
 <li>read the CSV file and specify column names;</li>
 <li>removed rows that did not contain data - for each package, the “time” returned a series of keys (version numbers but also a “created” and a “modified”) and values (time stamp) - it was assumed that the row with “created” and the earliest version of a package were on the same day and that the “modified” and the latesst version of a package were on the same day;</li>
-<li>extracted the date from the time stamp, extracted the year as a factor, extracted the month as a factor, extracted the day of the week as a factor and parsed the version number to only include the first three numbers and the dots separating the numbers; and</li>
-<li>extracted the version numbers into separate columns for major, minor and patch versions using the semver library.</li>
+<li>extracted the date from the time stamp, extracted the year as a factor, extracted the month as a factor, extracted the day of the week as a factor and parsed the version number to only include the first three numbers and the dots separating the numbers;</li>
+<li>extracted the version numbers into separate columns for major, minor and patch versions using the semver library; and</li>
+<li>add a new column with the type of versions (major, minor, patch or pre-release).</li>
 </ol>
-<p>The cleaned dataset contains the following 12 columns: package_name, version, time_stamp, date, time, year, month, major, minor, patch, prerelease, and build.</p>
+<p>The cleaned dataset contains the following 13 columns: package_name, version, time_stamp, date, time, year, month, major, minor, patch, prerelease, build and version_type.</p>
 </div>
 </div>
 <div id="acknowledgments" class="section level2">

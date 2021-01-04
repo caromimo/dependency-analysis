@@ -356,14 +356,15 @@ The CSV contained the name of the package, the version and a time stamp.
 
 The data needed a little attention before conducting analysis. The reader is referred to the [Rmarkdown file](https://github.com/caromimo/dependency-analysis/blob/master/index.Rmd) for code and details. 
 
-Briefly, the data was cleaned in the four main steps:
+Briefly, the data was cleaned in the following five main steps:
 
 1. read the CSV file and specify column names;
 2. removed rows that did not contain data - for each package, the "time" returned a series of keys (version numbers but also a "created" and a "modified") and values (time stamp) - it was assumed that the row with "created" and the earliest version of a package were on the same day and that the "modified" and the latesst version of a package were on the same day; 
-3. extracted the date from the time stamp, extracted the year as a factor, extracted the month as a factor, extracted the day of the week as a factor and parsed the version number to only include the first three numbers and the dots separating the numbers; and
-4. extracted the version numbers into separate columns for major, minor and patch versions using the semver library.
+3. extracted the date from the time stamp, extracted the year as a factor, extracted the month as a factor, extracted the day of the week as a factor and parsed the version number to only include the first three numbers and the dots separating the numbers;
+4. extracted the version numbers into separate columns for major, minor and patch versions using the semver library; and
+5. add a new column with the type of versions (major, minor, patch or pre-release).
 
-The cleaned dataset contains the following 12 columns: package_name, version, time_stamp, date, time, year, month, major, minor, patch, prerelease, and build.
+The cleaned dataset contains the following 13 columns: package_name, version, time_stamp, date, time, year, month, major, minor, patch, prerelease, build and version_type.
 
 ## Acknowledgments
 
