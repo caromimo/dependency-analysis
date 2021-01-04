@@ -81,7 +81,7 @@ data %>%
   geom_col(colour = "black", fill = "white") +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5)) +
   labs(
-    title = "Figure 1: Number of packages updated per year", 
+    title = "\nFigure 1: Number of packages updated per year", 
     x = "Year", 
     y = "Number of packages updated"
   )
@@ -99,7 +99,7 @@ data %>%
   geom_col(colour = "black", fill = "white") +
   theme() +
   labs(
-    title = "Figure 2: Breakdown of types of versions between December 2010 and 2020", 
+    title = "\nFigure 2: Breakdown of types of versions between December 2010 and 2020", 
     x = "Version type", 
     y = "Percent of all versions"
   ) +
@@ -118,7 +118,7 @@ stable_versions %>%
   geom_bar(colour = "black") +
   scale_fill_manual(name = "version type:", values=c("#f1faee","#a8dadc","#457b9d","#1d3557")) +
   labs(
-    title = "Figure 3: Number of versions per year", 
+    title = "\nFigure 3: Number of versions per year", 
     x = "Year", 
     y = "Number of versions"
   )
