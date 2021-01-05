@@ -160,25 +160,41 @@ formattable(
   align =c("l","c","c","c","c")
   )
 ```
-Based on those averages, and assuming that they are representative of the years to come, once in production, the [Tracker project](https://github.com/canada-ca/tracker/) will require maintenance as new versions will continue to be made available.  
+Based on those averages, and assuming that they are representative of the years to come, once in production, the [Tracker project](https://github.com/canada-ca/tracker/) will require maintenance and continued development as new versions will continue to be made available. **Figure 4** illustrates the number of new patches, minor versions, major versions and their total through time.
+```{r, include=FALSE}
+week_number <- c(0:52)
 
-weeks <- as.data.frame(weeks)
+versions_in_a_year <- data.frame(week_number)
 
-versions_in_a_year <- weeks %>% mutate(weeks = weeks, number_major_versions = weeks * 0.875, number_mmp = weeks * 14.029) -->
+versions_in_a_year <- versions_in_a_year %>% 
+  mutate(patches = week_number * 8.0,
+         minor_versions = week_number * 4.2,
+         major_versions = week_number * 0.8,
+         all_versions = major_versions + minor_versions + patches) 
+```
 
-versions_in_a_year %>% ggplot(aes(x=weeks, y=number_major_versions)) + geom_point() + labs(y="Expected number of new major versions since last update") + scale_x_continuous(name="Weeks since last major version was updated", breaks = seq(min(major_versions_in_a_year$weeks), max(major_versions_in_a_year$weeks), by = 4))
+```{r, echo=FALSE}
+library(tidyr)
+long <- versions_in_a_year %>% gather(variable, value, -c(week_number))
 
-versions_in_a_year %>% ggplot(aes(x=weeks, y=number_major_versions)) + geom_point() + labs(y="Expected number of new major versions since last update") + scale_x_continuous(name="Weeks since last major version was updated", breaks = seq(min(versions_in_a_year$weeks), max(versions_in_a_year$weeks), by = 4))
-      
-ggplot(versions_in_a_year, aes(x=weeks, y = value, color = variable)) + 
-geom_line(aes(y = number_major_versions, col = "major versions only")) +  
-geom_line(aes(y = number_mmp, col = "major, minor, patches")) + 
-scale_x_continuous(name="Weeks since last update", breaks = seq(min(versions_in_a_year$weeks), max(versions_in_a_year$weeks), by = 4)) +  labs(y="Expected number new versions since last update")
-      
-      
-      
-      
-      
+my_line_colors = c("#1d3557", "#457b9d", "#457b9d", "#457b9d")
+my_line_type = c("solid", "solid", "dashed", "dotted")
+my_legend_title = "Versions:"
+
+ggplot(long, aes(x = week_number, y = value)) + 
+  geom_line(aes(linetype = variable, color = variable)) + 
+  labs(
+    title = "\nFigure 4: Expected number of new versions over a year", 
+    x = "Weeks since last update", 
+    y = "Number of new versions"
+  ) +
+  scale_x_continuous(breaks = seq(min(versions_in_a_year$week_number), max(versions_in_a_year$week_number), by = 4)) +
+  scale_y_continuous(breaks = seq(min(0), max(700), by = 100)) +
+  scale_color_manual(name = my_legend_title, values = my_line_colors) +
+  scale_linetype_manual(name = my_legend_title, values = my_line_type) +
+  theme(legend.position="bottom")
+```
+
 **Figure 3** is a plot of the number of versions (major, minor and patches) for each package since December 29th, 2010. The package with the most versions is at the top (webpack with 319 versions) and the package with the least versions is at the bottom (webpack-config-utils with 6 versions). **Figure 3** demonstrates the variability in the number of versions among packages. Note that not all packages existed in December 2010 and the creation date of packages might account for some of this variability.
 
 ```{r, fig.height=18, echo=FALSE}
