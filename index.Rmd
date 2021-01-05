@@ -21,6 +21,7 @@ library(cowplot) # to plot figures side by side
 library(dplyr, warn.conflicts = FALSE)
 options(dplyr.summarise.inform = FALSE)
 library(hms) # to extract the time
+library(janitor) # for the tabyl function
 ```
 
 ## Context
@@ -126,34 +127,40 @@ stable_versions %>%
 
 ### Dependencies maintenance
 
-With an average of 675 stable updates (major, minor and patches) annually since 2015 to packages used in [Tracker project](https://github.com/canada-ca/tracker), once in production, the project will require maintenance to keep the dependancies up to date.
+As the number of stable updates seems relatively stable since 2015, the remaining of the analyses focused on data from 2015 to 2020. Number of updates per year and type, and totals, are detailed below.  
+
 ```{r, echo=FALSE}
-average_table <- stable_versions %>%
+versions_table <- stable_versions %>%
   filter(date >= "2015-01-01") %>%
-  group_by(year) %>%
-  summarise("number of stable versions" = n())
+  droplevels() %>%
+  tabyl(year, version_type) %>%
+  adorn_totals(c("row", "col"), name = "total")
 ```
 
 ```{r, echo=FALSE}
 formattable(
-  average_table,
-  align =c("l","c")
+  versions_table,
+  align =c("l","c","c","c","c")
   )
 ```
-
+Based on these numbers, the annual, monthly and weekly number of updates were calculated: 
 ```{r, include=FALSE}
-mean(average_table$`number of stable versions`)
-```
-
-```{r}
-stable_versions %>%
+averages <- stable_versions %>%
   filter(date >= "2015-01-01") %>%
   group_by(version_type) %>%
   summarise(n = n()) %>%
-  mutate(annual_average = n / 6) %>%
-  mutate(monthly_average = n / (6 * 12)) %>%
-  mutate(weekly_average = n / (6 * 52))
+  mutate("annual average" = round((n / 6), 1)) %>%
+  mutate("monthly average" = round(n / (6 * 12), 1)) %>%
+  mutate("weekly average" = round(n / (6 * 52), 1))
 ```
+
+```{r, echo=FALSE}
+formattable(
+  averages,
+  align =c("l","c","c","c","c")
+  )
+```
+Based on those averages, and assuming that they are representative of the years to come, once in production, the [Tracker project](https://github.com/canada-ca/tracker/) will require maintenance as new versions will continue to be made available.  
 
 weeks <- as.data.frame(weeks)
 

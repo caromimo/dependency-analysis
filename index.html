@@ -412,7 +412,7 @@ summary {
 </div>
 <div id="dependencies-maintenance" class="section level3">
 <h3>Dependencies maintenance</h3>
-<p>With an average of 675 stable updates (major, minor and patches) annually since 2015 to packages used in <a href="https://github.com/canada-ca/tracker">Tracker project</a>, once in production, the project will require maintenance to keep the dependancies up to date.</p>
+<p>As the number of stable updates seems relatively stable since 2015, the remaining of the analyses focused on data from 2015 to 2020. Number of updates per year and type, and totals, are detailed below.</p>
 <table class="table table-condensed">
 <thead>
 <tr>
@@ -420,7 +420,16 @@ summary {
 year
 </th>
 <th style="text-align:center;">
-number of stable versions
+major
+</th>
+<th style="text-align:center;">
+minor
+</th>
+<th style="text-align:center;">
+patch
+</th>
+<th style="text-align:center;">
+total
 </th>
 </tr>
 </thead>
@@ -428,6 +437,15 @@ number of stable versions
 <tr>
 <td style="text-align:left;">
 2015
+</td>
+<td style="text-align:center;">
+22
+</td>
+<td style="text-align:center;">
+189
+</td>
+<td style="text-align:center;">
+433
 </td>
 <td style="text-align:center;">
 644
@@ -438,12 +456,30 @@ number of stable versions
 2016
 </td>
 <td style="text-align:center;">
+48
+</td>
+<td style="text-align:center;">
+207
+</td>
+<td style="text-align:center;">
+380
+</td>
+<td style="text-align:center;">
 635
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
 2017
+</td>
+<td style="text-align:center;">
+45
+</td>
+<td style="text-align:center;">
+222
+</td>
+<td style="text-align:center;">
+418
 </td>
 <td style="text-align:center;">
 685
@@ -454,12 +490,30 @@ number of stable versions
 2018
 </td>
 <td style="text-align:center;">
+50
+</td>
+<td style="text-align:center;">
+242
+</td>
+<td style="text-align:center;">
+440
+</td>
+<td style="text-align:center;">
 732
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
 2019
+</td>
+<td style="text-align:center;">
+41
+</td>
+<td style="text-align:center;">
+230
+</td>
+<td style="text-align:center;">
+456
 </td>
 <td style="text-align:center;">
 727
@@ -470,24 +524,113 @@ number of stable versions
 2020
 </td>
 <td style="text-align:center;">
+45
+</td>
+<td style="text-align:center;">
+214
+</td>
+<td style="text-align:center;">
+372
+</td>
+<td style="text-align:center;">
 631
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+total
+</td>
+<td style="text-align:center;">
+251
+</td>
+<td style="text-align:center;">
+1304
+</td>
+<td style="text-align:center;">
+2499
+</td>
+<td style="text-align:center;">
+4054
 </td>
 </tr>
 </tbody>
 </table>
-<pre class="r"><code>stable_versions %&gt;%
-  filter(date &gt;= &quot;2015-01-01&quot;) %&gt;%
-  group_by(version_type) %&gt;%
-  summarise(n = n()) %&gt;%
-  mutate(annual_average = n / 6) %&gt;%
-  mutate(monthly_average = n / (6 * 12)) %&gt;%
-  mutate(weekly_average = n / (6 * 52))</code></pre>
-<pre><code>## # A tibble: 3 x 5
-##   version_type     n annual_average monthly_average weekly_average
-##   &lt;chr&gt;        &lt;int&gt;          &lt;dbl&gt;           &lt;dbl&gt;          &lt;dbl&gt;
-## 1 major          251           41.8            3.49          0.804
-## 2 minor         1304          217.            18.1           4.18 
-## 3 patch         2499          416.            34.7           8.01</code></pre>
+<p>Based on these numbers, the annual, monthly and weekly number of updates were calculated:</p>
+<table class="table table-condensed">
+<thead>
+<tr>
+<th style="text-align:left;">
+version_type
+</th>
+<th style="text-align:center;">
+n
+</th>
+<th style="text-align:center;">
+annual average
+</th>
+<th style="text-align:center;">
+monthly average
+</th>
+<th style="text-align:center;">
+weekly average
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+major
+</td>
+<td style="text-align:center;">
+251
+</td>
+<td style="text-align:center;">
+41.8
+</td>
+<td style="text-align:center;">
+3.5
+</td>
+<td style="text-align:center;">
+0.8
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+minor
+</td>
+<td style="text-align:center;">
+1304
+</td>
+<td style="text-align:center;">
+217.3
+</td>
+<td style="text-align:center;">
+18.1
+</td>
+<td style="text-align:center;">
+4.2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+patch
+</td>
+<td style="text-align:center;">
+2499
+</td>
+<td style="text-align:center;">
+416.5
+</td>
+<td style="text-align:center;">
+34.7
+</td>
+<td style="text-align:center;">
+8.0
+</td>
+</tr>
+</tbody>
+</table>
+<p>Based on those averages, and assuming that they are representative of the years to come, once in production, the <a href="https://github.com/canada-ca/tracker/">Tracker project</a> will require maintenance as new versions will continue to be made available.</p>
 <p>weeks &lt;- as.data.frame(weeks)</p>
 <p>versions_in_a_year &lt;- weeks %&gt;% mutate(weeks = weeks, number_major_versions = weeks * 0.875, number_mmp = weeks * 14.029) –&gt;</p>
 <p>versions_in_a_year %&gt;% ggplot(aes(x=weeks, y=number_major_versions)) + geom_point() + labs(y=“Expected number of new major versions since last update”) + scale_x_continuous(name=“Weeks since last major version was updated”, breaks = seq(min(major_versions_in_a_year<span class="math inline">\(weeks), max(major_versions_in_a_year\)</span>weeks), by = 4))</p>
