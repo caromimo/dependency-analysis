@@ -1,7 +1,7 @@
 ---
 title: "Software dependancy analysis"
 author: "C. Mimeault"
-date: "January 4, 2021"
+date: "January 5, 2021"
 output: html_document
 ---
 
@@ -125,7 +125,7 @@ stable_versions %>%
   )
 ```
 
-### Dependencies maintenance
+## Implications for software maintenance
 
 As the number of stable updates seems relatively stable since 2015, the remaining of the analyses focused on data from 2015 to 2020. Number of updates per year and type, and totals, are detailed below.  
 
@@ -160,7 +160,8 @@ formattable(
   align =c("l","c","c","c","c")
   )
 ```
-Based on those averages, and assuming that they are representative of the years to come, once in production, the [Tracker project](https://github.com/canada-ca/tracker/) will require maintenance and continued development as new versions will continue to be made available. **Figure 4** illustrates the number of new patches, minor versions, major versions and their total through time.
+Based on these averages, and assuming that they are representative of the years to come, once in production, the [Tracker project](https://github.com/canada-ca/tracker/) will require maintenance and continued development as new versions will continue to be made available. **Figure 4** illustrates the number of new patches, minor versions, major versions and their total over a year. For instance, if left unmaintained for three months, one could expect the project to lag by a total of 156 versions (96 patches, 50 minor versions and 10 major versions). Now, assuming that version numbering for the dependencies used in the project were done according to the [semantic versioning](https://semver.org) guidelines, not all new versions imply to need for the immediate intervention of a programmer. Patches are expected to fix bugs and to be backwards compatible. Minor patches are expected to add functionality and to be backwards compatible. However, major versions are expected to include incompatible API changes that would require the immediate intervention of a programmer. So in other words, maintenance would be required every one to two weeks. Note that this only accounts for the direct dependencies of the [dependency manifest file](https://github.com/canada-ca/tracker/blob/003a3d6e0452fb9a248a7d51fd5556bc03dfbcc6/frontend/package.json) from the frontend of Government of Canada's [Tracker project](https://github.com/canada-ca/tracker/)
+
 ```{r, include=FALSE}
 week_number <- c(0:52)
 
@@ -184,7 +185,7 @@ my_legend_title = "Versions:"
 ggplot(long, aes(x = week_number, y = value)) + 
   geom_line(aes(linetype = variable, color = variable)) + 
   labs(
-    title = "\nFigure 4: Expected number of new versions over a year", 
+    title = "\nFigure 4: Expected number of new versions over a year for the Tracker project", 
     x = "Weeks since last update", 
     y = "Number of new versions"
   ) +
@@ -195,6 +196,7 @@ ggplot(long, aes(x = week_number, y = value)) +
   theme(legend.position="bottom")
 ```
 
+## Packages updates
 **Figure 3** is a plot of the number of versions (major, minor and patches) for each package since December 29th, 2010. The package with the most versions is at the top (webpack with 319 versions) and the package with the least versions is at the bottom (webpack-config-utils with 6 versions). **Figure 3** demonstrates the variability in the number of versions among packages. Note that not all packages existed in December 2010 and the creation date of packages might account for some of this variability.
 
 ```{r, fig.height=18, echo=FALSE}
